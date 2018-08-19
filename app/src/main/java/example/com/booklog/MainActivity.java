@@ -40,9 +40,11 @@ public class MainActivity extends AppCompatActivity {
         if (cursor != null && cursor.getCount() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
             while (cursor.moveToNext()) {
-                stringBuilder.append("\n\nBook Name: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_NAME))).append("\nPrice : ").append(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE))).append("\nQuantity : ").append(cursor.getInt(cursor.getColumnIndex(COLUMN_QUANTITY)));
+                stringBuilder.append("ID : ").append("\nBook Name: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_NAME))).append("\nPrice : ").append(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE))).append("\nQuantity : ").append(cursor.getInt(cursor.getColumnIndex(COLUMN_QUANTITY))).append("\n\n");
             }
             textView.setText(stringBuilder.toString());
+        } else {
+            textView.setText(R.string.no_data);
         }
         if (cursor != null) {
             cursor.close();
@@ -70,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
         database.insert(TABLE_NAME, null, contentValues);
     }
 
+    private void deleteData() {
+        database = dbHelper.getWritableDatabase();
+
+        database.delete(TABLE_NAME, null, null);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -78,8 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_insert) {
-            insertDummyData();
+        switch (item.getItemId()) {
+            case R.id.action_insert:
+                insertDummyData();
+                break;
+            case R.id.action_delete:
+                deleteData();
+                break;
         }
         return true;
     }
