@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private BookDbHelper dbHelper;
     private SQLiteDatabase database;
     private TextView textView;
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new BookDbHelper(this);
 
-        Cursor cursor = fetchData();
+        cursor = fetchData();
 
         displayData(cursor);
     }
@@ -78,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
         database.delete(TABLE_NAME, null, null);
     }
 
+    private void refresh() {
+        cursor = fetchData();
+        displayData(cursor);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -92,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_delete:
                 deleteData();
+                break;
+            case R.id.action_refresh:
+                if (cursor != null){
+                    refresh();
+                }
                 break;
         }
         return true;
