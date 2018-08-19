@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Book Log</string>
+    <string name="insert_dummy_data">Insert Dummy Data</string>
 </resources>

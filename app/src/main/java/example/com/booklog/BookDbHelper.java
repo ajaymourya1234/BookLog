@@ -24,12 +24,12 @@ public class BookDbHelper extends SQLiteOpenHelper {
             COLUMN_PRICE + " REAL, " +
             COLUMN_QUANTITY + " INTEGER, " +
             COLUMN_SUPPLIER_NAME + " TEXT, " +
-            COLUMN_SUPPLIER_PHONE + " INTEGER" +
+            COLUMN_SUPPLIER_PHONE + " TEXT" +
             ")";
 
     private static final String DROP_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    public BookDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public BookDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
