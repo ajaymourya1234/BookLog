@@ -9,26 +9,29 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import static example.com.booklog.BookContract.BookEntry.CODE_BOOK;
-import static example.com.booklog.BookContract.BookEntry.CODE_BOOK_WITH_ID;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_ITEM_TYPE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_LIST_TYPE;
 import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
 import static example.com.booklog.BookContract.BookEntry._ID;
 import static example.com.booklog.BookContract.CONTENT_AUTHORITY;
+import static example.com.booklog.BookContract.LOG_TAG;
+import static example.com.booklog.BookContract.PATH_BOOKS;
 
 public class BookProvider extends ContentProvider {
 
-    BookDbHelper helper;
-    private static UriMatcher uriMatcher = buildUriMatcher();
+    public static final int CODE_BOOK = 100;
+    public static final int CODE_BOOK_WITH_ID = 101;
 
-    private static UriMatcher buildUriMatcher() {
-        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(CONTENT_AUTHORITY, TABLE_NAME, CODE_BOOK);
-        uriMatcher.addURI(CONTENT_AUTHORITY, TABLE_NAME + "/#", CODE_BOOK_WITH_ID);
-        return uriMatcher;
+    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+        uriMatcher.addURI(CONTENT_AUTHORITY, PATH_BOOKS, CODE_BOOK);
+        uriMatcher.addURI(CONTENT_AUTHORITY, PATH_BOOKS + "/#", CODE_BOOK_WITH_ID);
     }
+
+    private BookDbHelper helper;
 
     @Override
     public boolean onCreate() {
@@ -64,13 +67,14 @@ public class BookProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
+
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
                 return CONTENT_LIST_TYPE;
             case CODE_BOOK_WITH_ID:
                 return CONTENT_ITEM_TYPE;
                 default:
-                    throw new IllegalArgumentException("");
+                    throw new IllegalArgumentException("Unknown URI " + uri + " with match " + uriMatcher.match(uri));
         }
     }
 
@@ -85,9 +89,10 @@ public class BookProvider extends ContentProvider {
                 if (id != -1) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
-                return BookContract.BookEntry.buildUriWithId(id);
+                return ContentUris.withAppendedId(uri, id);
+                default:
+                    throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
-        return null;
     }
 
     @Override
@@ -97,6 +102,7 @@ public class BookProvider extends ContentProvider {
         int rowsDeleted;
 
         switch (uriMatcher.match(uri)) {
+
             case CODE_BOOK:
                 rowsDeleted = database.delete(TABLE_NAME, selection, selectionArgs);
                 break;
@@ -120,10 +126,28 @@ public class BookProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase database = helper.getWritableDatabase();
-        int rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
-        if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+        int rowsUpdated;
+
+        switch (uriMatcher.match(uri)) {
+            case CODE_BOOK:
+                rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
+                if (rowsUpdated != 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return rowsUpdated;
+
+            case CODE_BOOK_WITH_ID:
+                selection = _ID + "=?";
+                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
+                if (rowsUpdated != 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return rowsUpdated;
+
+                default:
+                    throw new IllegalArgumentException("Update is not supported for " + uri);
         }
-        return rowsUpdated;
+
     }
 }
