@@ -3,11 +3,16 @@ package example.com.booklog;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import butterknife.BindView;
 
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
@@ -18,17 +23,23 @@ import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.emptyTextView)
+    TextView emptyTextView;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
     private BookDbHelper dbHelper;
     private SQLiteDatabase database;
-    private TextView textView;
     private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        textView = findViewById(R.id.dataTextView);
 
         dbHelper = new BookDbHelper(this);
 
@@ -43,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 stringBuilder.append("ID : ").append("\nBook Name: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_NAME))).append("\nPrice : ").append(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE))).append("\nQuantity : ").append(cursor.getInt(cursor.getColumnIndex(COLUMN_QUANTITY))).append("\n\n");
             }
-            textView.setText(stringBuilder.toString());
+
         } else {
-            textView.setText(R.string.no_data);
+
         }
         if (cursor != null) {
             cursor.close();
