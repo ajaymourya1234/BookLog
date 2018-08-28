@@ -38,8 +38,8 @@ public class BookCursorAdapter extends CursorAdapter {
         int quantity = cursor.getInt(quantityColumnIndex);
 
         nameTextView.setText(name);
-        priceTextView.setText(price);
-        quantityTextView.setText(quantity);
+        priceTextView.setText(String.valueOf(price));
+        quantityTextView.setText(String.valueOf(quantity));
 
     }
 }

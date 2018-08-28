@@ -1,5 +1,6 @@
 package example.com.booklog;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -22,6 +23,9 @@ public class BookContract {
         public static Uri buildUriWithId(long id) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
         }
+
+        public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;;
 
         public static final int CODE_BOOK = 100;
         public static final int CODE_BOOK_WITH_ID = 101;

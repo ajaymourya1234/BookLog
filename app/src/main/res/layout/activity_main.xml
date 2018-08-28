@@ -5,16 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/emptyTextView"
@@ -23,7 +17,7 @@
         android:layout_gravity="center"
         android:textAlignment="center"
         android:layout_margin="16dp"
-        tools:text="No data yet"/>
+        android:text="No data yet. Start adding some books!"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
