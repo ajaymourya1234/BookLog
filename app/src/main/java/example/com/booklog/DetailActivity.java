@@ -61,6 +61,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = getIntent();
         if (intent.getData() == null) {
             setTitle("Add a new book");
+            invalidateOptionsMenu();
         } else {
             uri = intent.getData();
             setTitle("Edit book");
@@ -88,6 +89,17 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (uri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
+        return true;
     }
 
     private void savePet() {

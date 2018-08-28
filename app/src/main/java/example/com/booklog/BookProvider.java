@@ -9,14 +9,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.text.TextUtils;
 
+import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_ITEM_TYPE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_LIST_TYPE;
 import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
 import static example.com.booklog.BookContract.BookEntry._ID;
 import static example.com.booklog.BookContract.CONTENT_AUTHORITY;
-import static example.com.booklog.BookContract.LOG_TAG;
 import static example.com.booklog.BookContract.PATH_BOOKS;
 
 public class BookProvider extends ContentProvider {
@@ -85,6 +89,7 @@ public class BookProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
+                validateInsertData(contentValues);
                 long id = database.insert(TABLE_NAME, null, contentValues);
                 if (id != -1) {
                     getContext().getContentResolver().notifyChange(uri, null);
@@ -93,6 +98,35 @@ public class BookProvider extends ContentProvider {
                 default:
                     throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
+    }
+
+    private void validateInsertData(ContentValues contentValues) {
+        String name = contentValues.getAsString(COLUMN_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Book requires a name");
+        }
+
+        String priceInString = contentValues.getAsString(COLUMN_PRICE);
+        double price = priceInString != null && !TextUtils.isEmpty(priceInString) ? Double.parseDouble(priceInString) : 0;
+        if (price < 1) {
+            throw new IllegalArgumentException("Price has to be at a minimum Re.1");
+        }
+
+        int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
+        if (quantity < 1) {
+            throw new IllegalArgumentException("There has to be at least 1 piece of the book");
+        }
+
+        String supplierName = contentValues.getAsString(COLUMN_SUPPLIER_NAME);
+        if (supplierName == null) {
+            throw new IllegalArgumentException("Book requires the supplier details");
+        }
+
+        String supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
+        if (supplierPhone == null) {
+            throw new IllegalArgumentException("Supplier phone number is missing");
+        }
+
     }
 
     @Override
@@ -130,6 +164,10 @@ public class BookProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
+                if (contentValues.size() == 0) {
+                    return 0;
+                }
+                validateUpdateData(contentValues);
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
                 if (rowsUpdated != 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
@@ -137,6 +175,10 @@ public class BookProvider extends ContentProvider {
                 return rowsUpdated;
 
             case CODE_BOOK_WITH_ID:
+                if (contentValues.size() == 0) {
+                    return 0;
+                }
+                validateUpdateData(contentValues);
                 selection = _ID + "=?";
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
@@ -149,5 +191,43 @@ public class BookProvider extends ContentProvider {
                     throw new IllegalArgumentException("Update is not supported for " + uri);
         }
 
+    }
+
+    private void validateUpdateData(ContentValues contentValues) {
+
+        if (contentValues.containsKey(COLUMN_NAME)) {
+            String name = contentValues.getAsString(COLUMN_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Book requires a name");
+            }
+        }
+
+        if (contentValues.containsKey(COLUMN_PRICE)) {
+            double price = contentValues.getAsDouble(COLUMN_PRICE);
+            if (price < 1) {
+                throw new IllegalArgumentException("Book requires a valid price");
+            }
+        }
+
+        if (contentValues.containsKey(COLUMN_QUANTITY)) {
+            int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
+            if (quantity < 1) {
+                throw new IllegalArgumentException("Book requires a valid quantity");
+            }
+        }
+
+        if (contentValues.containsKey(COLUMN_SUPPLIER_NAME)) {
+            String supplierName = contentValues.getAsString(COLUMN_SUPPLIER_NAME);
+            if (supplierName == null) {
+                throw new IllegalArgumentException("Book requires a supplier");
+            }
+        }
+
+        if (contentValues.containsKey(COLUMN_SUPPLIER_PHONE)) {
+            String supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
+            if (supplierPhone == null) {
+                throw new IllegalArgumentException("Book requires a supplier's phone");
+            }
+        }
     }
 }
