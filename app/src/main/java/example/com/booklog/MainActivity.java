@@ -76,29 +76,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(1, null, this);
     }
 
-    /*private void displayData(Cursor cursor) {
-        if (cursor != null && cursor.getCount() > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            while (cursor.moveToNext()) {
-                stringBuilder.append("ID : ").append("\nBook Name: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_NAME))).append("\nPrice : ").append(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE))).append("\nQuantity : ").append(cursor.getInt(cursor.getColumnIndex(COLUMN_QUANTITY))).append("\n\n");
-            }
-
-        } else {
-
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
-    }
-
-    private Cursor fetchData() {
-
-        database = dbHelper.getReadableDatabase();
-
-        String[] columns = {COLUMN_NAME, COLUMN_PRICE, COLUMN_QUANTITY};
-        return database.query(TABLE_NAME, columns, null, null, null, null, null);
-    }*/
-
     private void insertDummyData() {
 
         ContentValues contentValues = new ContentValues();
@@ -115,11 +92,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getContentResolver().delete(CONTENT_URI, null, null);
     }
 
-    /*private void refresh() {
-        cursor = fetchData();
-        displayData(cursor);
-    }*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -135,11 +107,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.action_delete:
                 deleteData();
                 break;
-            /*case R.id.action_refresh:
-                if (cursor != null){
-                    refresh();
-                }
-                break;*/
         }
         return true;
     }
