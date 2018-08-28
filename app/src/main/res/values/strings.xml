@@ -14,4 +14,6 @@
     <string name="supplier_name">Supplier Name</string>
     <string name="supplier_phone_no">Supplier Phone No.</string>
     <string name="hint_supplier_phone">Supplier\'s Contact No.</string>
+    <string name="save_book">Save Book</string>
+    <string name="delete_book">Delete Book</string>
 </resources>

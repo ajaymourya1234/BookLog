@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,9 +43,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    private BookDbHelper dbHelper;
-    private SQLiteDatabase database;
-    private Cursor cursor;
     private BookCursorAdapter adapter;
 
     @Override
@@ -61,12 +60,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
         listView.setEmptyView(emptyTextView);
-        adapter = new BookCursorAdapter(this, cursor);
+        adapter = new BookCursorAdapter(this, null);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "Item clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.setData(ContentUris.withAppendedId(CONTENT_URI, id));
                 startActivity(intent);
