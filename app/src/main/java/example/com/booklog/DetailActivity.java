@@ -9,16 +9,16 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,18 +31,22 @@ import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.BookContract.BookEntry._ID;
 
-public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     @BindView(R.id.nameEditText)
     EditText nameEditText;
     @BindView(R.id.priceEditText)
     EditText priceEditText;
     @BindView(R.id.quantity)
-    TextView quantityEditText;
+    TextView quantityTextView;
     @BindView(R.id.supplierNameEditText)
     EditText supplierNameEditText;
     @BindView(R.id.supplierPhoneNoEditText)
     EditText supplierPhoneEditText;
+    @BindView(R.id.increaseQuantity)
+    FloatingActionButton increaseQuantity;
+    @BindView(R.id.decreaseQuantity)
+    FloatingActionButton decreaseQuantity;
 
     private Uri uri;
 
@@ -68,6 +72,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
             getLoaderManager().initLoader(1, null, this);
         }
+
+        increaseQuantity.setOnClickListener(this);
+        decreaseQuantity.setOnClickListener(this);
     }
 
     @Override
@@ -106,7 +113,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         String name = nameEditText.getText().toString().trim();
         String price = priceEditText.getText().toString().trim();
-        String quantity = quantityEditText.getText().toString().trim();
+        String quantity = quantityTextView.getText().toString().trim();
         String supplierName = supplierNameEditText.getText().toString().trim();
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
 
@@ -211,7 +218,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
             nameEditText.setText(name);
             priceEditText.setText(String.valueOf(price));
-            quantityEditText.setText(String.valueOf(quantity));
+            quantityTextView.setText(String.valueOf(quantity));
             supplierNameEditText.setText(supplierName);
             supplierPhoneEditText.setText(supplierPhone);
         }
@@ -222,7 +229,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(Loader<Cursor> loader) {
         nameEditText.setText("");
         priceEditText.setText("");
-        quantityEditText.setText("");
+        quantityTextView.setText("");
         supplierNameEditText.setText("");
         supplierPhoneEditText.setText("");
     }
@@ -231,5 +238,23 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int quantity = Integer.parseInt(quantityTextView.getText().toString());
+        switch (view.getId()) {
+            case R.id.increaseQuantity:
+                quantity++;
+                break;
+            case R.id.decreaseQuantity:
+                if (quantity > 1) {
+                    quantity--;
+                } else {
+                    Toast.makeText(this, "Quantity has to be at least 1", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+        quantityTextView.setText(String.valueOf(quantity));
     }
 }
