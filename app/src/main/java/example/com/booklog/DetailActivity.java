@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +45,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @BindView(R.id.supplierPhoneNoEditText)
     EditText supplierPhoneEditText;
     @BindView(R.id.increaseQuantity)
-    FloatingActionButton increaseQuantity;
+    ImageButton increaseQuantity;
     @BindView(R.id.decreaseQuantity)
-    FloatingActionButton decreaseQuantity;
+    ImageButton decreaseQuantity;
 
     private Uri uri;
 
