@@ -37,7 +37,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     EditText nameEditText;
     @BindView(R.id.priceEditText)
     EditText priceEditText;
-    @BindView(R.id.quantity)
+    @BindView(R.id.pieces)
     TextView quantityTextView;
     @BindView(R.id.supplierNameEditText)
     EditText supplierNameEditText;

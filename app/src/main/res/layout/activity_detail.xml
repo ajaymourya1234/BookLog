@@ -76,7 +76,7 @@
         app:layout_constraintTop_toTopOf="@+id/barrier2" />
 
     <TextView
-        android:id="@+id/quantity"
+        android:id="@+id/pieces"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -105,7 +105,7 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toTopOf="@+id/barrier4"
-        app:layout_constraintEnd_toStartOf="@+id/quantity"
+        app:layout_constraintEnd_toStartOf="@+id/pieces"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/barrier3"
         app:srcCompat="@drawable/ic_add" />
@@ -122,7 +122,7 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/quantity"
+        app:layout_constraintStart_toEndOf="@+id/pieces"
         app:layout_constraintTop_toTopOf="@+id/barrier3"
         app:srcCompat="@drawable/ic_remove" />
 
@@ -217,7 +217,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="quantity,decreaseQuantity,increaseQuantity" />
+        app:constraint_referenced_ids="pieces,decreaseQuantity,increaseQuantity" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barrier5"

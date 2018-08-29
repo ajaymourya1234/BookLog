@@ -16,4 +16,8 @@
     <string name="hint_supplier_phone">Supplier\'s Contact No.</string>
     <string name="save_book">Save Book</string>
     <string name="delete_book">Delete Book</string>
+    <string name="rupee_symbol">\u20B9</string>
+    <string name="pieces">pcs</string>
+    <string name="no_desc_available">No description available</string>
+    <string name="in_stock">In stock:</string>
 </resources>

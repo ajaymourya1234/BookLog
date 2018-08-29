@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
@@ -15,12 +16,13 @@ import static example.com.booklog.BookContract.BookEntry._ID;
 public class BookDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "books.db";
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 3;
 
     private static final String CREATE_ENTRIES = "CREATE TABLE " +
             TABLE_NAME + " (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_NAME + " TEXT NOT NULL, " +
+            COLUMN_AUTHOR + " TEXT NOT NULL, " +
             COLUMN_PRICE + " REAL NOT NULL, " +
             COLUMN_QUANTITY + " INTEGER NOT NULL DEFAULT 0, " +
             COLUMN_SUPPLIER_NAME + " TEXT NOT NULL, " +
