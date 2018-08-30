@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentValues.put(COLUMN_QUANTITY, 3);
         contentValues.put(COLUMN_SUPPLIER_NAME, "Arrow books");
         contentValues.put(COLUMN_SUPPLIER_PHONE, "9982433217");
-        contentValues.put(COLUMN_IMAGE, 0);
+        contentValues.put(COLUMN_IMAGE, "");
 
         getContentResolver().insert(CONTENT_URI, contentValues);
     }

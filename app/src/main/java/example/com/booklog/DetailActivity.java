@@ -44,6 +44,7 @@ import static example.com.booklog.BookContract.LOG_TAG;
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     private static final int PICK_IMAGE_REQUEST = 0;
+
     @BindView(R.id.nameEditText)
     EditText nameEditText;
     @BindView(R.id.priceEditText)
@@ -236,14 +237,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             int quantity = cursor.getInt(quantityColumnIndex);
             String supplierName = cursor.getString(supplierNameColumnIndex);
             String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
-            String imageUri = cursor.getString(imageColumnIndex);
+            imageUri = Uri.parse(cursor.getString(imageColumnIndex));
 
             nameEditText.setText(name);
             priceEditText.setText(String.valueOf(price));
             quantityTextView.setText(String.valueOf(quantity));
             supplierNameEditText.setText(supplierName);
             supplierPhoneEditText.setText(supplierPhone);
-            image.setImageURI(Uri.parse(imageUri));
+            image.setImageURI(imageUri);
         }
 
     }
