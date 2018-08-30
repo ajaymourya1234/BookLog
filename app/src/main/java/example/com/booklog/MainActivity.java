@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,8 +36,9 @@ import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
 import static example.com.booklog.BookContract.BookEntry._ID;
+import static example.com.booklog.BookContract.LOG_TAG;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, OnQuantityChangeListener {
 
     @BindView(R.id.listView)
     ListView listView;
@@ -135,5 +137,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void updateQuantity(long rowId, int newQuantity) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_QUANTITY, newQuantity);
+        Uri updateUri = ContentUris.withAppendedId(CONTENT_URI, rowId);
+        Log.d(LOG_TAG, "Update URI is : " + updateUri);
+        getContentResolver().update(updateUri, contentValues, null, null);
     }
 }
