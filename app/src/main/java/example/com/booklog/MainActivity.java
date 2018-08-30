@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentValues.put(COLUMN_QUANTITY, 3);
         contentValues.put(COLUMN_SUPPLIER_NAME, "Arrow books");
         contentValues.put(COLUMN_SUPPLIER_PHONE, "9982433217");
+        contentValues.put(COLUMN_IMAGE, 0);
 
         getContentResolver().insert(CONTENT_URI, contentValues);
     }
@@ -119,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 COLUMN_NAME,
                 COLUMN_AUTHOR,
                 COLUMN_PRICE,
-                COLUMN_QUANTITY
+                COLUMN_QUANTITY,
+                COLUMN_IMAGE
         };
         return new CursorLoader(this, CONTENT_URI, projection, null, null, null);
     }

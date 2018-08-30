@@ -31,6 +31,7 @@ import java.io.InputStream;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
@@ -63,6 +64,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     TextView selectImageTextView;
 
     private Uri uri;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +135,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         String supplierName = supplierNameEditText.getText().toString().trim();
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
 
-        if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(price) && TextUtils.isEmpty(quantity) && TextUtils.isEmpty(supplierName) && TextUtils.isEmpty(supplierPhone)) {
+        if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(price) && TextUtils.isEmpty(quantity) && TextUtils.isEmpty(supplierName) && TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(imageUri.toString())) {
             return;
         }
 
@@ -143,6 +145,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         contentValues.put(COLUMN_QUANTITY, quantity);
         contentValues.put(COLUMN_SUPPLIER_NAME, supplierName);
         contentValues.put(COLUMN_SUPPLIER_PHONE, supplierPhone);
+        contentValues.put(COLUMN_IMAGE, imageUri.toString());
 
         if (uri == null) {
             Uri newUri = getContentResolver().insert(CONTENT_URI, contentValues);
@@ -208,7 +211,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 COLUMN_PRICE,
                 COLUMN_QUANTITY,
                 COLUMN_SUPPLIER_NAME,
-                COLUMN_SUPPLIER_PHONE
+                COLUMN_SUPPLIER_PHONE,
+                COLUMN_IMAGE
         };
         return new CursorLoader(this, uri, projection, null, null, null);
     }
@@ -225,18 +229,21 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             int quantityColumnIndex = cursor.getColumnIndex(COLUMN_QUANTITY);
             int supplierNameColumnIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_NAME);
             int supplierPhoneColumnIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_PHONE);
+            int imageColumnIndex = cursor.getColumnIndex(COLUMN_IMAGE);
 
             String name = cursor.getString(nameColumnIndex);
             double price = cursor.getDouble(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             String supplierName = cursor.getString(supplierNameColumnIndex);
             String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
+            String imageUri = cursor.getString(imageColumnIndex);
 
             nameEditText.setText(name);
             priceEditText.setText(String.valueOf(price));
             quantityTextView.setText(String.valueOf(quantity));
             supplierNameEditText.setText(supplierName);
             supplierPhoneEditText.setText(supplierPhone);
+            image.setImageURI(Uri.parse(imageUri));
         }
 
     }
@@ -248,6 +255,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         quantityTextView.setText("");
         supplierNameEditText.setText("");
         supplierPhoneEditText.setText("");
+        image.setImageResource(0);
     }
 
     @Override
@@ -291,7 +299,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
             if (data != null) {
-                Uri imageUri = data.getData();
+                imageUri = data.getData();
                 Log.d(LOG_TAG, " URI is : " + imageUri.toString());
                 image.setImageBitmap(getBitmapFromUri(imageUri));
             }
