@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_ITEM_TYPE;
@@ -202,16 +203,16 @@ public class BookProvider extends ContentProvider {
             }
         }
 
-        if (contentValues.containsKey(COLUMN_PRICE)) {
+        if (contentValues.containsKey(COLUMN_PRICE) && contentValues.getAsString(COLUMN_PRICE).length() > 0) {
             double price = contentValues.getAsDouble(COLUMN_PRICE);
-            if (price < 1) {
+            if (price < 0) {
                 throw new IllegalArgumentException("Book requires a valid price");
             }
         }
 
-        if (contentValues.containsKey(COLUMN_QUANTITY)) {
+        if (contentValues.containsKey(COLUMN_QUANTITY) && contentValues.getAsString(COLUMN_QUANTITY).length() > 0) {
             int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
-            if (quantity < 1) {
+            if (quantity < 0) {
                 throw new IllegalArgumentException("Book requires a valid quantity");
             }
         }
@@ -227,6 +228,13 @@ public class BookProvider extends ContentProvider {
             String supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
             if (supplierPhone == null) {
                 throw new IllegalArgumentException("Book requires a supplier's phone");
+            }
+        }
+
+        if (contentValues.containsKey(COLUMN_SUPPLIER_EMAIL)) {
+            String supplierEmail = contentValues.getAsString(COLUMN_SUPPLIER_EMAIL);
+            if (supplierEmail == null) {
+                throw new IllegalArgumentException("Book requires a supplier's email");
             }
         }
     }

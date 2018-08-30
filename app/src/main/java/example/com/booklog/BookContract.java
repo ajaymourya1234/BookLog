@@ -21,10 +21,12 @@ public class BookContract {
         public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_AUTHOR = "author";
+        public static final String COLUMN_ISBN = "isbn";
         public static final String COLUMN_PRICE = "price";
         public static final String COLUMN_QUANTITY = "quantity";
         public static final String COLUMN_SUPPLIER_NAME = "supplier_name";
         public static final String COLUMN_SUPPLIER_PHONE = "supplier_phone";
+        public static final String COLUMN_SUPPLIER_EMAIL = "supplier_email";
         public static final String COLUMN_IMAGE = "image";
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, PATH_BOOKS);

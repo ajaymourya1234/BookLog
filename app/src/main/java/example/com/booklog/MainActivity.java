@@ -28,9 +28,11 @@ import butterknife.ButterKnife;
 
 import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_ISBN;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
@@ -84,10 +86,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, "To kill a mocking bird");
         contentValues.put(COLUMN_AUTHOR, "Harper Lee");
+        contentValues.put(COLUMN_ISBN, "978-81-929109-1-8");
         contentValues.put(COLUMN_PRICE, 399);
         contentValues.put(COLUMN_QUANTITY, 3);
         contentValues.put(COLUMN_SUPPLIER_NAME, "Arrow books");
         contentValues.put(COLUMN_SUPPLIER_PHONE, "9982433217");
+        contentValues.put(COLUMN_SUPPLIER_EMAIL, "arrowbooks@mail.com");
         contentValues.put(COLUMN_IMAGE, "");
 
         getContentResolver().insert(CONTENT_URI, contentValues);

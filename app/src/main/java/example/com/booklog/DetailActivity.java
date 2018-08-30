@@ -31,10 +31,13 @@ import java.io.InputStream;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_ISBN;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
@@ -47,6 +50,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @BindView(R.id.nameEditText)
     EditText nameEditText;
+    @BindView(R.id.authorEditText)
+    EditText authorEditText;
+    @BindView(R.id.isbnEditText)
+    EditText isbnEditText;
     @BindView(R.id.priceEditText)
     EditText priceEditText;
     @BindView(R.id.pieces)
@@ -55,6 +62,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     EditText supplierNameEditText;
     @BindView(R.id.supplierPhoneNoEditText)
     EditText supplierPhoneEditText;
+    @BindView(R.id.supplierEmailEditText)
+    EditText supplierEmailEditText;
     @BindView(R.id.increaseQuantity)
     ImageButton increaseQuantity;
     @BindView(R.id.decreaseQuantity)
@@ -131,21 +140,30 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private void savePet() {
 
         String name = nameEditText.getText().toString().trim();
+        String author = authorEditText.getText().toString().trim();
+        String isbn = isbnEditText.getText().toString().trim();
         String price = priceEditText.getText().toString().trim();
         String quantity = quantityTextView.getText().toString().trim();
         String supplierName = supplierNameEditText.getText().toString().trim();
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
+        String supplierEmail = supplierEmailEditText.getText().toString().trim();
 
-        if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(price) && TextUtils.isEmpty(quantity) && TextUtils.isEmpty(supplierName) && TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(imageUri.toString())) {
+        if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(author) && TextUtils.isEmpty(isbn) &&
+                TextUtils.isEmpty(price) && TextUtils.isEmpty(quantity) && TextUtils.isEmpty(supplierName) &&
+                TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail) &&
+                TextUtils.isEmpty(imageUri.toString())) {
             return;
         }
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, name);
+        contentValues.put(COLUMN_AUTHOR, author);
+        contentValues.put(COLUMN_ISBN, isbn);
         contentValues.put(COLUMN_PRICE, price);
         contentValues.put(COLUMN_QUANTITY, quantity);
         contentValues.put(COLUMN_SUPPLIER_NAME, supplierName);
         contentValues.put(COLUMN_SUPPLIER_PHONE, supplierPhone);
+        contentValues.put(COLUMN_SUPPLIER_EMAIL, supplierEmail);
         contentValues.put(COLUMN_IMAGE, imageUri.toString());
 
         if (uri == null) {
@@ -209,10 +227,13 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         String[] projection = {
                 _ID,
                 COLUMN_NAME,
+                COLUMN_AUTHOR,
+                COLUMN_ISBN,
                 COLUMN_PRICE,
                 COLUMN_QUANTITY,
                 COLUMN_SUPPLIER_NAME,
                 COLUMN_SUPPLIER_PHONE,
+                COLUMN_SUPPLIER_EMAIL,
                 COLUMN_IMAGE
         };
         return new CursorLoader(this, uri, projection, null, null, null);
@@ -226,24 +247,33 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         if (cursor.moveToFirst()) {
             int nameColumnIndex = cursor.getColumnIndex(COLUMN_NAME);
+            int authorColumnIndex = cursor.getColumnIndex(COLUMN_AUTHOR);
+            int isbnColumnIndex = cursor.getColumnIndex(COLUMN_ISBN);
             int priceColumnIndex = cursor.getColumnIndex(COLUMN_PRICE);
             int quantityColumnIndex = cursor.getColumnIndex(COLUMN_QUANTITY);
             int supplierNameColumnIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_NAME);
             int supplierPhoneColumnIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_PHONE);
+            int supplierEmailColumnIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_EMAIL);
             int imageColumnIndex = cursor.getColumnIndex(COLUMN_IMAGE);
 
             String name = cursor.getString(nameColumnIndex);
+            String author = cursor.getString(authorColumnIndex);
+            String isbn = cursor.getString(isbnColumnIndex);
             double price = cursor.getDouble(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             String supplierName = cursor.getString(supplierNameColumnIndex);
             String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
+            String supplierEmail = cursor.getString(supplierEmailColumnIndex);
             imageUri = Uri.parse(cursor.getString(imageColumnIndex));
 
             nameEditText.setText(name);
+            authorEditText.setText(author);
+            isbnEditText.setText(isbn);
             priceEditText.setText(String.valueOf(price));
             quantityTextView.setText(String.valueOf(quantity));
             supplierNameEditText.setText(supplierName);
             supplierPhoneEditText.setText(supplierPhone);
+            supplierEmailEditText.setText(supplierEmail);
             image.setImageURI(imageUri);
         }
 
@@ -252,10 +282,13 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         nameEditText.setText("");
+        authorEditText.setText("");
+        isbnEditText.setText("");
         priceEditText.setText("");
         quantityTextView.setText("");
         supplierNameEditText.setText("");
         supplierPhoneEditText.setText("");
+        supplierEmailEditText.setText("");
         image.setImageResource(0);
     }
 
@@ -267,7 +300,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onClick(View view) {
-        int quantity = Integer.parseInt(quantityTextView.getText().toString());
+        int quantity = 0;
+        if (quantityTextView.getText().length() > 0){
+            quantity = Integer.parseInt(quantityTextView.getText().toString());
+        }
         switch (view.getId()) {
             case R.id.increaseQuantity:
                 quantity++;
