@@ -8,18 +8,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,9 +38,11 @@ import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.BookContract.BookEntry._ID;
+import static example.com.booklog.BookContract.LOG_TAG;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
+    private static final int PICK_IMAGE_REQUEST = 0;
     @BindView(R.id.nameEditText)
     EditText nameEditText;
     @BindView(R.id.priceEditText)
@@ -48,6 +57,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     ImageButton increaseQuantity;
     @BindView(R.id.decreaseQuantity)
     ImageButton decreaseQuantity;
+    @BindView(R.id.image)
+    ImageView image;
+    @BindView(R.id.select_image_text)
+    TextView selectImageTextView;
 
     private Uri uri;
 
@@ -76,6 +89,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         increaseQuantity.setOnClickListener(this);
         decreaseQuantity.setOnClickListener(this);
+        image.setOnClickListener(this);
+        selectImageTextView.setOnClickListener(this);
     }
 
     @Override
@@ -247,15 +262,83 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         switch (view.getId()) {
             case R.id.increaseQuantity:
                 quantity++;
+                quantityTextView.setText(String.valueOf(quantity));
                 break;
             case R.id.decreaseQuantity:
                 if (quantity > 1) {
                     quantity--;
+                    quantityTextView.setText(String.valueOf(quantity));
                 } else {
                     Toast.makeText(this, "Quantity has to be at least 1", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.select_image_text:
+            case R.id.image:
+                Intent intent;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                } else {
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                }
+                intent.setType("image/*");
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                break;
         }
-        quantityTextView.setText(String.valueOf(quantity));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri imageUri = data.getData();
+                Log.d(LOG_TAG, " URI is : " + imageUri.toString());
+                image.setImageBitmap(getBitmapFromUri(imageUri));
+            }
+
+        }
+
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) {
+
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+
+        InputStream inputStream = null;
+
+        try {
+            inputStream = getContentResolver().openInputStream(uri);
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(inputStream, null, options);
+            inputStream.close();
+
+            int targetWidth = options.outWidth;
+            int targetHeight = options.outHeight;
+
+            int scaleFactor = Math.min(imageWidth/targetWidth, imageHeight/targetHeight);
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = scaleFactor;
+
+            inputStream = getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+
+            return bitmap;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }
