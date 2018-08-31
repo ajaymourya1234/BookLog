@@ -103,29 +103,35 @@ public class BookProvider extends ContentProvider {
 
     private void validateInsertData(ContentValues contentValues) {
         String name = contentValues.getAsString(COLUMN_NAME);
-        if (name == null) {
-            throw new IllegalArgumentException("Book requires a name");
+        if (name == null || TextUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Book requires a title");
         }
 
         String priceInString = contentValues.getAsString(COLUMN_PRICE);
         double price = priceInString != null && !TextUtils.isEmpty(priceInString) ? Double.parseDouble(priceInString) : 0;
-        if (price < 1) {
-            throw new IllegalArgumentException("Price has to be at a minimum Re.1");
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative or zero");
         }
 
-        int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
-        if (quantity < 1) {
-            throw new IllegalArgumentException("There has to be at least 1 piece of the book");
+        String quantityInString = contentValues.getAsString(COLUMN_QUANTITY);
+        int quantity = quantityInString != null && !TextUtils.isEmpty(quantityInString) ? Integer.parseInt(quantityInString) : 0;
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
         }
 
         String supplierName = contentValues.getAsString(COLUMN_SUPPLIER_NAME);
-        if (supplierName == null) {
-            throw new IllegalArgumentException("Book requires the supplier details");
+        if (supplierName == null || TextUtils.isEmpty(supplierName)) {
+            throw new IllegalArgumentException("Supplier name is required");
         }
 
         String supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
-        if (supplierPhone == null) {
-            throw new IllegalArgumentException("Supplier phone number is missing");
+        if (supplierPhone == null || TextUtils.isEmpty(supplierPhone)) {
+            throw new IllegalArgumentException("Supplier's phone number is missing");
+        }
+
+        String supplierEmail = contentValues.getAsString(COLUMN_SUPPLIER_EMAIL);
+        if (supplierEmail == null || TextUtils.isEmpty(supplierEmail)) {
+            throw new IllegalArgumentException("Supplier's email is missing");
         }
 
     }
@@ -198,44 +204,50 @@ public class BookProvider extends ContentProvider {
 
         if (contentValues.containsKey(COLUMN_NAME)) {
             String name = contentValues.getAsString(COLUMN_NAME);
-            if (name == null) {
-                throw new IllegalArgumentException("Book requires a name");
+            if (name == null || TextUtils.isEmpty(name)) {
+                throw new IllegalArgumentException("Book requires a title");
             }
         }
 
         if (contentValues.containsKey(COLUMN_PRICE) && contentValues.getAsString(COLUMN_PRICE).length() > 0) {
             double price = contentValues.getAsDouble(COLUMN_PRICE);
             if (price < 0) {
-                throw new IllegalArgumentException("Book requires a valid price");
+                throw new IllegalArgumentException("Price cannot be zero or negative");
             }
         }
 
         if (contentValues.containsKey(COLUMN_QUANTITY) && contentValues.getAsString(COLUMN_QUANTITY).length() > 0) {
             int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
             if (quantity < 0) {
-                throw new IllegalArgumentException("Book requires a valid quantity");
+                throw new IllegalArgumentException("Quantity cannot be negative");
             }
         }
+
 
         if (contentValues.containsKey(COLUMN_SUPPLIER_NAME)) {
             String supplierName = contentValues.getAsString(COLUMN_SUPPLIER_NAME);
-            if (supplierName == null) {
-                throw new IllegalArgumentException("Book requires a supplier");
+            if (supplierName == null || TextUtils.isEmpty(supplierName)) {
+                throw new IllegalArgumentException("Supplier name is required");
             }
         }
 
+        if (!contentValues.containsKey(COLUMN_SUPPLIER_PHONE) && !contentValues.containsKey(COLUMN_SUPPLIER_EMAIL)) {
+            throw new IllegalArgumentException("Either one of supplier's phone or email is required");
+        }
+
+        String supplierPhone = "";
+        String supplierEmail = "";
+
         if (contentValues.containsKey(COLUMN_SUPPLIER_PHONE)) {
-            String supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
-            if (supplierPhone == null) {
-                throw new IllegalArgumentException("Book requires a supplier's phone");
-            }
+            supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
         }
 
         if (contentValues.containsKey(COLUMN_SUPPLIER_EMAIL)) {
-            String supplierEmail = contentValues.getAsString(COLUMN_SUPPLIER_EMAIL);
-            if (supplierEmail == null) {
-                throw new IllegalArgumentException("Book requires a supplier's email");
-            }
+            supplierEmail = contentValues.getAsString(COLUMN_SUPPLIER_EMAIL);
+        }
+
+        if (TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail)) {
+            throw new IllegalArgumentException("Either one of supplier's phone or email is required");
         }
     }
 }

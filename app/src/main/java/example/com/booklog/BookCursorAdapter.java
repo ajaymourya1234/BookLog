@@ -69,11 +69,11 @@ public class BookCursorAdapter extends CursorAdapter {
             public void onClick(View view) {
                 Log.d(LOG_TAG, "Sell Button has been clicked");
                 if (listener != null ) {
-                    if (quantity[0] > 1) {
+                    if (quantity[0] > 0) {
                         quantity[0]--;
                         listener.updateQuantity(rowId, quantity[0]);
                     } else {
-                        Toast.makeText(context, "Quantity has to be a minimum of 1", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No more books to sell", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

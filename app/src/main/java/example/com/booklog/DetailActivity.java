@@ -57,7 +57,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @BindView(R.id.priceEditText)
     EditText priceEditText;
     @BindView(R.id.pieces)
-    TextView quantityTextView;
+    EditText quantityEditText;
     @BindView(R.id.supplierNameEditText)
     EditText supplierNameEditText;
     @BindView(R.id.supplierPhoneNoEditText)
@@ -75,6 +75,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     private Uri uri;
     private Uri imageUri;
+    private Toast toast;
+    private boolean saveSuccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +118,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         switch (item.getItemId()) {
             case R.id.action_done:
                 savePet();
-                finish();
-                return true;
+                if (saveSuccess) {
+                    finish();
+                    return true;
+                }
+                return false;
 
             case R.id.action_delete:
                 showDeleteConfirmationDialog();
@@ -143,7 +148,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         String author = authorEditText.getText().toString().trim();
         String isbn = isbnEditText.getText().toString().trim();
         String price = priceEditText.getText().toString().trim();
-        String quantity = quantityTextView.getText().toString().trim();
+        String quantity = quantityEditText.getText().toString().trim();
         String supplierName = supplierNameEditText.getText().toString().trim();
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
         String supplierEmail = supplierEmailEditText.getText().toString().trim();
@@ -153,6 +158,54 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail) &&
                 TextUtils.isEmpty(imageUri.toString())) {
             return;
+        }
+
+        if (TextUtils.isEmpty(name)) {
+            nameEditText.setError("Title cannot be empty");
+            saveSuccess = false;
+            return;
+        } else {
+            saveSuccess = true;
+        }
+
+        if (TextUtils.isEmpty(author)) {
+            author = "Unknown";
+        }
+
+        if (TextUtils.isEmpty(isbn)) {
+            isbn = "Not Available";
+        }
+
+        if (TextUtils.isEmpty(price)) {
+            priceEditText.setError("Valid price required");
+            saveSuccess = false;
+            return;
+        } else {
+            saveSuccess = true;
+        }
+
+        if (TextUtils.isEmpty(quantity)) {
+            quantityEditText.setError("Quantity required");
+            saveSuccess = false;
+            return;
+        } else {
+            saveSuccess = true;
+        }
+
+        if (TextUtils.isEmpty(supplierName)) {
+            supplierNameEditText.setError("Supplier name is required");
+            saveSuccess = false;
+            return;
+        } else {
+            saveSuccess = true;
+        }
+
+        if (TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail)) {
+            displayError("Either one of supplier's phone or email is required");
+            saveSuccess = false;
+            return;
+        } else {
+            saveSuccess = true;
         }
 
         ContentValues contentValues = new ContentValues();
@@ -182,6 +235,18 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             } else {
                 Toast.makeText(this, "Book updated", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void displayError(String error) {
+        cancelToast();
+        toast = Toast.makeText(this, error, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    private void cancelToast() {
+        if (toast != null) {
+            toast.cancel();
         }
     }
 
@@ -270,7 +335,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             authorEditText.setText(author);
             isbnEditText.setText(isbn);
             priceEditText.setText(String.valueOf(price));
-            quantityTextView.setText(String.valueOf(quantity));
+            quantityEditText.setText(String.valueOf(quantity));
             supplierNameEditText.setText(supplierName);
             supplierPhoneEditText.setText(supplierPhone);
             supplierEmailEditText.setText(supplierEmail);
@@ -285,7 +350,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         authorEditText.setText("");
         isbnEditText.setText("");
         priceEditText.setText("");
-        quantityTextView.setText("");
+        quantityEditText.setText("");
         supplierNameEditText.setText("");
         supplierPhoneEditText.setText("");
         supplierEmailEditText.setText("");
@@ -301,20 +366,24 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onClick(View view) {
         int quantity = 0;
-        if (quantityTextView.getText().length() > 0){
-            quantity = Integer.parseInt(quantityTextView.getText().toString());
+        if (quantityEditText.getText().length() > 0){
+            quantity = Integer.parseInt(quantityEditText.getText().toString());
         }
         switch (view.getId()) {
             case R.id.increaseQuantity:
                 quantity++;
-                quantityTextView.setText(String.valueOf(quantity));
+                quantityEditText.setText(String.valueOf(quantity));
+                quantityEditText.setSelection(quantityEditText.getText().length());
+                quantityEditText.setError(null);
                 break;
             case R.id.decreaseQuantity:
-                if (quantity > 1) {
+                if (quantity > 0) {
                     quantity--;
-                    quantityTextView.setText(String.valueOf(quantity));
+                    quantityEditText.setText(String.valueOf(quantity));
+                    quantityEditText.setSelection(quantityEditText.getText().length());
+                    quantityEditText.setError(null);
                 } else {
-                    Toast.makeText(this, "Quantity has to be at least 1", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Quantity cannot be less than 0", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.select_image_text:
@@ -337,7 +406,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
             if (data != null) {
                 imageUri = data.getData();
-                Log.d(LOG_TAG, " URI is : " + imageUri.toString());
                 image.setImageBitmap(getBitmapFromUri(imageUri));
             }
 
