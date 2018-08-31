@@ -125,13 +125,12 @@ public class BookProvider extends ContentProvider {
         }
 
         String supplierPhone = contentValues.getAsString(COLUMN_SUPPLIER_PHONE);
-        if (supplierPhone == null || TextUtils.isEmpty(supplierPhone)) {
-            throw new IllegalArgumentException("Supplier's phone number is missing");
-        }
-
         String supplierEmail = contentValues.getAsString(COLUMN_SUPPLIER_EMAIL);
-        if (supplierEmail == null || TextUtils.isEmpty(supplierEmail)) {
-            throw new IllegalArgumentException("Supplier's email is missing");
+
+        if (supplierPhone == null && supplierEmail == null) {
+            throw new IllegalArgumentException("Either one of supplier's phone or email is required");
+        } else if (TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail)) {
+            throw new IllegalArgumentException("Either one of supplier's phone or email is required");
         }
 
     }

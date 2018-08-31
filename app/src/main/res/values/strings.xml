@@ -25,5 +25,5 @@
     <string name="hint_book_author">Author</string>
     <string name="hint_book_isbn">ISBN</string>
     <string name="supplier">Supplier</string>
-    <string name="select_a_new_image">Select a new image</string>
+    <string name="select_a_new_image">Tap to select a new image</string>
 </resources>

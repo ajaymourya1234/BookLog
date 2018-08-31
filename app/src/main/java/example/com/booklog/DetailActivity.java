@@ -2,6 +2,7 @@ package example.com.booklog;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -76,7 +77,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private Uri uri;
     private Uri imageUri;
     private Toast toast;
-    private boolean saveSuccess;
+    private boolean saveSuccess = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,11 +153,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         String supplierName = supplierNameEditText.getText().toString().trim();
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
         String supplierEmail = supplierEmailEditText.getText().toString().trim();
+        if (imageUri == null || TextUtils.isEmpty(imageUri.toString())) {
+            imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+            "://" + getResources().getResourcePackageName(R.drawable.no_img_available) +
+            '/' + getResources().getResourceTypeName(R.drawable.no_img_available) +
+            '/' + getResources().getResourceEntryName(R.drawable.no_img_available));
+        }
 
         if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(author) && TextUtils.isEmpty(isbn) &&
                 TextUtils.isEmpty(price) && TextUtils.isEmpty(quantity) && TextUtils.isEmpty(supplierName) &&
-                TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail) &&
-                TextUtils.isEmpty(imageUri.toString())) {
+                TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail)) {
             return;
         }
 
