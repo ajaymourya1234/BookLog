@@ -1,8 +1,11 @@
-package example.com.booklog;
+package example.com.booklog.data;
 
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
+
+import example.com.booklog.BuildConfig;
+import example.com.booklog.activity.MainActivity;
 
 public class BookContract {
 
@@ -34,7 +37,6 @@ public class BookContract {
 
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;
-        ;
 
     }
 }

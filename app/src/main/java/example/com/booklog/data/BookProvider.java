@@ -1,4 +1,4 @@
-package example.com.booklog;
+package example.com.booklog.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -11,18 +11,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
-import static example.com.booklog.BookContract.BookEntry.CONTENT_ITEM_TYPE;
-import static example.com.booklog.BookContract.BookEntry.CONTENT_LIST_TYPE;
-import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
-import static example.com.booklog.BookContract.BookEntry._ID;
-import static example.com.booklog.BookContract.CONTENT_AUTHORITY;
-import static example.com.booklog.BookContract.PATH_BOOKS;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
+import static example.com.booklog.data.BookContract.BookEntry.CONTENT_ITEM_TYPE;
+import static example.com.booklog.data.BookContract.BookEntry.CONTENT_LIST_TYPE;
+import static example.com.booklog.data.BookContract.BookEntry.TABLE_NAME;
+import static example.com.booklog.data.BookContract.BookEntry._ID;
+import static example.com.booklog.data.BookContract.CONTENT_AUTHORITY;
+import static example.com.booklog.data.BookContract.PATH_BOOKS;
 
 public class BookProvider extends ContentProvider {
 
@@ -64,7 +64,9 @@ public class BookProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI : " + uri);
         }
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        if (getContext() != null) {
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
 
         return cursor;
     }
@@ -90,12 +92,15 @@ public class BookProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
-                validateInsertData(contentValues);
-                long id = database.insert(TABLE_NAME, null, contentValues);
-                if (id != -1) {
-                    getContext().getContentResolver().notifyChange(uri, null);
+                if (contentValues != null) {
+                    validateInsertData(contentValues);
+                    long id = database.insert(TABLE_NAME, null, contentValues);
+                    if (id != -1 && getContext() != null) {
+                        getContext().getContentResolver().notifyChange(uri, null);
+                    }
+                    return ContentUris.withAppendedId(uri, id);
                 }
-                return ContentUris.withAppendedId(uri, id);
+
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
@@ -157,7 +162,7 @@ public class BookProvider extends ContentProvider {
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
 
-        if (rowsDeleted != 0) {
+        if (rowsDeleted != 0 && getContext() != null) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
@@ -170,25 +175,25 @@ public class BookProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
-                if (contentValues.size() == 0) {
+                if (contentValues == null || contentValues.size() == 0) {
                     return 0;
                 }
                 validateUpdateData(contentValues);
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
-                if (rowsUpdated != 0) {
+                if (rowsUpdated != 0 && getContext() != null) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return rowsUpdated;
 
             case CODE_BOOK_WITH_ID:
-                if (contentValues.size() == 0) {
+                if (contentValues == null || contentValues.size() == 0) {
                     return 0;
                 }
                 validateUpdateData(contentValues);
                 selection = _ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
-                if (rowsUpdated != 0) {
+                if (rowsUpdated != 0 && getContext() != null) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return rowsUpdated;
@@ -200,6 +205,17 @@ public class BookProvider extends ContentProvider {
     }
 
     private void validateUpdateData(ContentValues contentValues) {
+
+        if (contentValues.containsKey(COLUMN_QUANTITY) && contentValues.getAsString(COLUMN_QUANTITY).length() > 0) {
+            int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
+            if (quantity < 0) {
+                throw new IllegalArgumentException("Quantity cannot be negative");
+            }
+        }
+
+        if (contentValues.size() == 1 && contentValues.containsKey(COLUMN_QUANTITY)) {
+            return;
+        }
 
         if (contentValues.containsKey(COLUMN_NAME)) {
             String name = contentValues.getAsString(COLUMN_NAME);
@@ -214,14 +230,6 @@ public class BookProvider extends ContentProvider {
                 throw new IllegalArgumentException("Price cannot be zero or negative");
             }
         }
-
-        if (contentValues.containsKey(COLUMN_QUANTITY) && contentValues.getAsString(COLUMN_QUANTITY).length() > 0) {
-            int quantity = contentValues.getAsInteger(COLUMN_QUANTITY);
-            if (quantity < 0) {
-                throw new IllegalArgumentException("Quantity cannot be negative");
-            }
-        }
-
 
         if (contentValues.containsKey(COLUMN_SUPPLIER_NAME)) {
             String supplierName = contentValues.getAsString(COLUMN_SUPPLIER_NAME);

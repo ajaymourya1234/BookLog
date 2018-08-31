@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".DetailActivity">
+    tools:context=".activity.DetailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -98,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/select_a_new_image" />
 
         <LinearLayout
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/priceEditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/supplierPhoneNoEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -230,7 +230,7 @@
             android:layout_height="wrap_content">
 
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/supplierEmailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

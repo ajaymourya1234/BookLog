@@ -1,4 +1,4 @@
-package example.com.booklog;
+package example.com.booklog.listner;
 
 public interface OnQuantityChangeListener {
 

@@ -1,4 +1,4 @@
-package example.com.booklog;
+package example.com.booklog.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -13,17 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.BookContract.BookEntry._ID;
-import static example.com.booklog.BookContract.LOG_TAG;
+import example.com.booklog.R;
+import example.com.booklog.listner.OnQuantityChangeListener;
+
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.data.BookContract.BookEntry._ID;
+import static example.com.booklog.data.BookContract.LOG_TAG;
 
 public class BookCursorAdapter extends CursorAdapter {
 
-    OnQuantityChangeListener listener;
+    private OnQuantityChangeListener listener;
 
     public BookCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);

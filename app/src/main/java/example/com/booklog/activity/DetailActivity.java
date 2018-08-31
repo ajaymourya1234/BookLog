@@ -1,4 +1,4 @@
-package example.com.booklog;
+package example.com.booklog.activity;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
@@ -33,19 +33,20 @@ import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import example.com.booklog.R;
 
-import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_ISBN;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
-import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
-import static example.com.booklog.BookContract.BookEntry._ID;
-import static example.com.booklog.BookContract.LOG_TAG;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_ISBN;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
+import static example.com.booklog.data.BookContract.BookEntry.CONTENT_URI;
+import static example.com.booklog.data.BookContract.BookEntry._ID;
+import static example.com.booklog.data.BookContract.LOG_TAG;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, TextWatcher {
 

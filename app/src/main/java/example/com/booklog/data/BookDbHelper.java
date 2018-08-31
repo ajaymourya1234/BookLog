@@ -1,25 +1,25 @@
-package example.com.booklog;
+package example.com.booklog.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_ISBN;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
-import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
-import static example.com.booklog.BookContract.BookEntry._ID;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_ISBN;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
+import static example.com.booklog.data.BookContract.BookEntry.TABLE_NAME;
+import static example.com.booklog.data.BookContract.BookEntry._ID;
 
 public class BookDbHelper extends SQLiteOpenHelper {
 
-    public static final String DB_NAME = "books.db";
-    public static final int DB_VERSION = 5;
+    private static final String DB_NAME = "books.db";
+    private static final int DB_VERSION = 5;
 
     private static final String CREATE_ENTRIES = "CREATE TABLE " +
             TABLE_NAME + " (" +
@@ -37,7 +37,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
 
     private static final String DROP_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    public BookDbHelper(Context context) {
+    BookDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

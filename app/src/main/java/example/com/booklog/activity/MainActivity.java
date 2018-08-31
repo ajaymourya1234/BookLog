@@ -1,4 +1,4 @@
-package example.com.booklog;
+package example.com.booklog.activity;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
@@ -18,14 +18,17 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import example.com.booklog.R;
+import example.com.booklog.adapter.BookCursorAdapter;
+import example.com.booklog.listner.OnQuantityChangeListener;
 
-import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
-import static example.com.booklog.BookContract.BookEntry._ID;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.data.BookContract.BookEntry.CONTENT_URI;
+import static example.com.booklog.data.BookContract.BookEntry._ID;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, OnQuantityChangeListener {
 
