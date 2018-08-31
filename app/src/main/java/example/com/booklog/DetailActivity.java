@@ -14,7 +14,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +47,7 @@ import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.BookContract.BookEntry._ID;
 import static example.com.booklog.BookContract.LOG_TAG;
 
-public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, TextWatcher {
 
     private static final int PICK_IMAGE_REQUEST = 0;
 
@@ -78,6 +80,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private Uri imageUri;
     private Toast toast;
     private boolean saveSuccess = true;
+    private boolean unsavedChanges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         decreaseQuantity.setOnClickListener(this);
         image.setOnClickListener(this);
         selectImageTextView.setOnClickListener(this);
+
     }
 
     @Override
@@ -132,6 +136,27 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         return super.onOptionsItemSelected(item);
     }
 
+    private void showUnsavedChangesAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Discard changes?");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (dialogInterface != null) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.create().show();
+        unsavedChanges = false;
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -153,6 +178,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         String supplierName = supplierNameEditText.getText().toString().trim();
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
         String supplierEmail = supplierEmailEditText.getText().toString().trim();
+
         if (imageUri == null || TextUtils.isEmpty(imageUri.toString())) {
             imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
             "://" + getResources().getResourcePackageName(R.drawable.no_img_available) +
@@ -175,11 +201,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         if (TextUtils.isEmpty(author)) {
-            author = "Unknown";
+            author = getString(R.string.unknown_author);
         }
 
         if (TextUtils.isEmpty(isbn)) {
-            isbn = "Not Available";
+            isbn = getString(R.string.isbn_not_available);
         }
 
         if (TextUtils.isEmpty(price)) {
@@ -338,6 +364,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             imageUri = Uri.parse(cursor.getString(imageColumnIndex));
 
             nameEditText.setText(name);
+            nameEditText.setSelection(nameEditText.getText().length());
             authorEditText.setText(author);
             isbnEditText.setText(isbn);
             priceEditText.setText(String.valueOf(price));
@@ -346,8 +373,21 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             supplierPhoneEditText.setText(supplierPhone);
             supplierEmailEditText.setText(supplierEmail);
             image.setImageURI(imageUri);
+
+            registerTextChangedListeners();
         }
 
+    }
+
+    private void registerTextChangedListeners() {
+        nameEditText.addTextChangedListener(this);
+        authorEditText.addTextChangedListener(this);
+        isbnEditText.addTextChangedListener(this);
+        priceEditText.addTextChangedListener(this);
+        quantityEditText.addTextChangedListener(this);
+        supplierNameEditText.addTextChangedListener(this);
+        supplierPhoneEditText.addTextChangedListener(this);
+        supplierEmailEditText.addTextChangedListener(this);
     }
 
     @Override
@@ -365,6 +405,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public boolean onSupportNavigateUp() {
+        Log.d(LOG_TAG, "Unsaved changes exist ? " + unsavedChanges);
+        if (unsavedChanges) {
+            showUnsavedChangesAlert();
+            return false;
+        }
         finish();
         return true;
     }
@@ -410,6 +455,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
+            unsavedChanges = true;
             if (data != null) {
                 imageUri = data.getData();
                 image.setImageBitmap(getBitmapFromUri(imageUri));
@@ -459,5 +505,28 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         return null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (unsavedChanges) {
+            showUnsavedChangesAlert();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        unsavedChanges = true;
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
     }
 }

@@ -16,14 +16,14 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textStyle="bold"
-            android:text="@string/overview" />
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/overview"
+            android:textStyle="bold" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/hint_book_title"
-                android:inputType="textPersonName" />
+                android:inputType="textCapWords" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -59,7 +59,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/hint_book_author"
-                android:inputType="textPersonName" />
+                android:inputType="textCapWords" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -79,7 +79,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/hint_book_isbn"
-                android:inputType="textPersonName" />
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -88,18 +88,18 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            tools:src="@tools:sample/avatars"
-            android:contentDescription="@string/no_desc_available" />
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/no_desc_available"
+            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/select_image_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/select_a_new_image"
             android:layout_gravity="center"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:text="@string/select_a_new_image" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -137,8 +137,8 @@
                     android:layout_height="48dp"
                     android:layout_margin="8dp"
                     android:background="@drawable/button_shape"
-                    app:srcCompat="@drawable/ic_add"
-                    android:contentDescription="@string/no_desc_available" />
+                    android:contentDescription="@string/no_desc_available"
+                    app:srcCompat="@drawable/ic_add" />
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
@@ -156,6 +156,7 @@
                         android:layout_marginTop="8dp"
                         android:ems="4"
                         android:hint="@string/quantity"
+                        android:inputType="number"
                         android:textAppearance="?android:textAppearanceMedium" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -167,8 +168,8 @@
                     android:layout_height="48dp"
                     android:layout_margin="8dp"
                     android:background="@drawable/button_shape"
-                    app:srcCompat="@drawable/ic_remove"
-                    android:contentDescription="@string/no_desc_available" />
+                    android:contentDescription="@string/no_desc_available"
+                    app:srcCompat="@drawable/ic_remove" />
 
             </LinearLayout>
 
@@ -177,14 +178,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textStyle="bold"
-            android:text="@string/supplier" />
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/supplier"
+            android:textStyle="bold" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -201,7 +202,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/hint_supplier_name"
-                android:inputType="textPersonName" />
+                android:inputType="textCapWords" />
 
         </android.support.design.widget.TextInputLayout>
 
