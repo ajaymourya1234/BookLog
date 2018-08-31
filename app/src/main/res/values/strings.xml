@@ -1,18 +1,10 @@
 <resources>
     <string name="app_name">Book Log</string>
-    <string name="insert_dummy_data">Insert Dummy Data</string>
-    <string name="delete_all_data">Delete all data</string>
-    <string name="no_data">No data</string>
-    <string name="refresh">Refresh</string>
     <string name="sell">Sell</string>
-    <string name="book_name">Book Name</string>
     <string name="hint_book_title">Title *</string>
-    <string name="price">Price</string>
     <string name="hint_price">Price in Rs *</string>
     <string name="quantity">Quantity *</string>
     <string name="hint_supplier_name">Name *</string>
-    <string name="supplier_name">Supplier Name</string>
-    <string name="supplier_phone_no">Supplier Phone No.</string>
     <string name="hint_supplier_phone">Phone No.</string>
     <string name="hint_supplier_email">Email</string>
     <string name="save_book">Save Book</string>
@@ -28,4 +20,5 @@
     <string name="select_a_new_image">Tap to select a new image</string>
     <string name="unknown_author">Unknown</string>
     <string name="isbn_not_available">Not Available</string>
+    <string name="empty_string">No data yet. Start adding some books!</string>
 </resources>

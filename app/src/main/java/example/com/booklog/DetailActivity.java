@@ -170,6 +170,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     private void savePet() {
 
+        if (!unsavedChanges) {
+            return;
+        }
+
         String name = nameEditText.getText().toString().trim();
         String author = authorEditText.getText().toString().trim();
         String isbn = isbnEditText.getText().toString().trim();
@@ -181,9 +185,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         if (imageUri == null || TextUtils.isEmpty(imageUri.toString())) {
             imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
-            "://" + getResources().getResourcePackageName(R.drawable.no_img_available) +
-            '/' + getResources().getResourceTypeName(R.drawable.no_img_available) +
-            '/' + getResources().getResourceEntryName(R.drawable.no_img_available));
+                    "://" + getResources().getResourcePackageName(R.drawable.no_img_available) +
+                    '/' + getResources().getResourceTypeName(R.drawable.no_img_available) +
+                    '/' + getResources().getResourceEntryName(R.drawable.no_img_available));
         }
 
         if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(author) && TextUtils.isEmpty(isbn) &&
@@ -233,7 +237,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         if (TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail)) {
-            displayError("Either one of supplier's phone or email is required");
+            cancelToast();
+            toast = Toast.makeText(this, "Either one of supplier's phone or email is required", Toast.LENGTH_SHORT);
+            toast.show();
             saveSuccess = false;
             return;
         } else {
@@ -270,12 +276,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
-    private void displayError(String error) {
-        cancelToast();
-        toast = Toast.makeText(this, error, Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
     private void cancelToast() {
         if (toast != null) {
             toast.cancel();
@@ -283,7 +283,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private void showDeleteConfirmationDialog() {
-        AlertDialog.Builder builder =  new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Delete this book?");
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
@@ -417,7 +417,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onClick(View view) {
         int quantity = 0;
-        if (quantityEditText.getText().length() > 0){
+        if (quantityEditText.getText().length() > 0) {
             quantity = Integer.parseInt(quantityEditText.getText().toString());
         }
         switch (view.getId()) {
@@ -454,11 +454,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Uri currentImageUri = imageUri;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            unsavedChanges = true;
             if (data != null) {
                 imageUri = data.getData();
-                image.setImageBitmap(getBitmapFromUri(imageUri));
+                if (!currentImageUri.toString().equals(imageUri.toString())) {
+                    unsavedChanges = true;
+                } else {
+                    image.setImageBitmap(getBitmapFromUri(imageUri));
+                }
             }
 
         }
@@ -478,18 +482,22 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(inputStream, null, options);
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
 
             int targetWidth = options.outWidth;
             int targetHeight = options.outHeight;
 
-            int scaleFactor = Math.min(imageWidth/targetWidth, imageHeight/targetHeight);
+            int scaleFactor = Math.min(imageWidth / targetWidth, imageHeight / targetHeight);
             options.inJustDecodeBounds = false;
             options.inSampleSize = scaleFactor;
 
             inputStream = getContentResolver().openInputStream(uri);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
 
             return bitmap;
         } catch (FileNotFoundException e) {
@@ -498,7 +506,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             e.printStackTrace();
         } finally {
             try {
-                inputStream.close();
+                if (inputStream != null) {
+                    inputStream.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

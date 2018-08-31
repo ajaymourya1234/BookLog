@@ -57,12 +57,12 @@ public class BookProvider extends ContentProvider {
 
             case CODE_BOOK_WITH_ID:
                 selection = _ID + "=?";
-                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
-                default:
-                    throw new IllegalArgumentException("Cannot query unknown URI : " + uri);
+            default:
+                throw new IllegalArgumentException("Cannot query unknown URI : " + uri);
         }
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -78,8 +78,8 @@ public class BookProvider extends ContentProvider {
                 return CONTENT_LIST_TYPE;
             case CODE_BOOK_WITH_ID:
                 return CONTENT_ITEM_TYPE;
-                default:
-                    throw new IllegalArgumentException("Unknown URI " + uri + " with match " + uriMatcher.match(uri));
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri + " with match " + uriMatcher.match(uri));
         }
     }
 
@@ -96,8 +96,8 @@ public class BookProvider extends ContentProvider {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return ContentUris.withAppendedId(uri, id);
-                default:
-                    throw new IllegalArgumentException("Insertion is not supported for " + uri);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
 
@@ -149,12 +149,12 @@ public class BookProvider extends ContentProvider {
 
             case CODE_BOOK_WITH_ID:
                 selection = _ID + "=?";
-                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsDeleted = database.delete(TABLE_NAME, selection, selectionArgs);
                 break;
 
-                default:
-                    throw new IllegalArgumentException("Deletion is not supported for " + uri);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
 
         if (rowsDeleted != 0) {
@@ -186,15 +186,15 @@ public class BookProvider extends ContentProvider {
                 }
                 validateUpdateData(contentValues);
                 selection = _ID + "=?";
-                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
                 if (rowsUpdated != 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return rowsUpdated;
 
-                default:
-                    throw new IllegalArgumentException("Update is not supported for " + uri);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
         }
 
     }

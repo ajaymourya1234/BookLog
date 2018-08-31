@@ -68,7 +68,7 @@ public class BookCursorAdapter extends CursorAdapter {
             @Override
             public void onClick(View view) {
                 Log.d(LOG_TAG, "Sell Button has been clicked");
-                if (listener != null ) {
+                if (listener != null) {
                     if (quantity[0] > 0) {
                         quantity[0]--;
                         listener.updateQuantity(rowId, quantity[0]);

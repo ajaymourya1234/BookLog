@@ -7,38 +7,25 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static example.com.booklog.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_IMAGE;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_ISBN;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
-import static example.com.booklog.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.BookContract.BookEntry.CONTENT_URI;
-import static example.com.booklog.BookContract.BookEntry.TABLE_NAME;
 import static example.com.booklog.BookContract.BookEntry._ID;
-import static example.com.booklog.BookContract.LOG_TAG;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, OnQuantityChangeListener {
 
@@ -81,45 +68,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(1, null, this);
     }
 
-    private void insertDummyData() {
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME, "To kill a mocking bird");
-        contentValues.put(COLUMN_AUTHOR, "Harper Lee");
-        contentValues.put(COLUMN_ISBN, "978-81-929109-1-8");
-        contentValues.put(COLUMN_PRICE, 399);
-        contentValues.put(COLUMN_QUANTITY, 3);
-        contentValues.put(COLUMN_SUPPLIER_NAME, "Arrow books");
-        contentValues.put(COLUMN_SUPPLIER_PHONE, "9982433217");
-        contentValues.put(COLUMN_SUPPLIER_EMAIL, "arrowbooks@mail.com");
-        contentValues.put(COLUMN_IMAGE, "");
-
-        getContentResolver().insert(CONTENT_URI, contentValues);
-    }
-
-    private void deleteData() {
-        getContentResolver().delete(CONTENT_URI, null, null);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_insert:
-                insertDummyData();
-                break;
-            case R.id.action_delete:
-                deleteData();
-                break;
-        }
-        return true;
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String[] projection = {
@@ -148,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_QUANTITY, newQuantity);
         Uri updateUri = ContentUris.withAppendedId(CONTENT_URI, rowId);
-        Log.d(LOG_TAG, "Update URI is : " + updateUri);
         getContentResolver().update(updateUri, contentValues, null, null);
     }
 }
