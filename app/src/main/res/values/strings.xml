@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Book Log</string>
-    <string name="sell">Sell</string>
+    <string name="sell">Sell Stock</string>
     <string name="hint_book_title">Title *</string>
     <string name="hint_price">Price in Rs *</string>
     <string name="quantity">Quantity *</string>

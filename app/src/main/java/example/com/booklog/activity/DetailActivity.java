@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +45,6 @@ import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NA
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.data.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.data.BookContract.BookEntry._ID;
-import static example.com.booklog.data.BookContract.LOG_TAG;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, TextWatcher {
 
@@ -68,10 +66,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     EditText supplierPhoneEditText;
     @BindView(R.id.supplierEmailEditText)
     EditText supplierEmailEditText;
+
     @BindView(R.id.increaseQuantity)
     ImageButton increaseQuantity;
     @BindView(R.id.decreaseQuantity)
     ImageButton decreaseQuantity;
+
     @BindView(R.id.image)
     ImageView image;
     @BindView(R.id.select_image_text)
@@ -80,6 +80,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private Uri uri;
     private Uri imageUri;
     private Toast toast;
+
     private boolean saveSuccess = true;
     private boolean unsavedChanges;
 
@@ -238,9 +239,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         if (TextUtils.isEmpty(supplierPhone) && TextUtils.isEmpty(supplierEmail)) {
-            cancelToast();
-            toast = Toast.makeText(this, "Either one of supplier's phone or email is required", Toast.LENGTH_SHORT);
-            toast.show();
+            displayToastAlert("Either one of supplier's phone or email is required");
             saveSuccess = false;
             return;
         } else {
@@ -262,19 +261,25 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             Uri newUri = getContentResolver().insert(CONTENT_URI, contentValues);
 
             if (newUri == null) {
-                Toast.makeText(this, "Error saving book", Toast.LENGTH_LONG).show();
+                displayToastAlert("Error saving book");
             } else {
-                Toast.makeText(this, "Book saved", Toast.LENGTH_LONG).show();
+                displayToastAlert("Book saved");
             }
         } else {
             int rowsAffected = getContentResolver().update(uri, contentValues, null, null);
 
             if (rowsAffected == 0) {
-                Toast.makeText(this, "Error updating book", Toast.LENGTH_LONG).show();
+                displayToastAlert("Error updating book");
             } else {
-                Toast.makeText(this, "Book updated", Toast.LENGTH_LONG).show();
+                displayToastAlert("Book updated");
             }
         }
+    }
+
+    private void displayToastAlert(String message) {
+        cancelToast();
+        toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     private void cancelToast() {
@@ -310,9 +315,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             int rowsDeleted = getContentResolver().delete(uri, null, null);
 
             if (rowsDeleted == 0) {
-                Toast.makeText(this, "Error deleting book", Toast.LENGTH_LONG).show();
+                displayToastAlert("Error deleting book");
             } else {
-                Toast.makeText(this, "Book deleted", Toast.LENGTH_LONG).show();
+                displayToastAlert("Book deleted");
             }
             finish();
         }
@@ -406,7 +411,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public boolean onSupportNavigateUp() {
-        Log.d(LOG_TAG, "Unsaved changes exist ? " + unsavedChanges);
         if (unsavedChanges) {
             showUnsavedChangesAlert();
             return false;
@@ -435,7 +439,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     quantityEditText.setSelection(quantityEditText.getText().length());
                     quantityEditText.setError(null);
                 } else {
-                    Toast.makeText(this, "Quantity cannot be less than 0", Toast.LENGTH_SHORT).show();
+                    displayToastAlert("Quantity cannot be less than 0");
                 }
                 break;
             case R.id.select_image_text:

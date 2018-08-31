@@ -27,6 +27,7 @@ import static example.com.booklog.data.BookContract.LOG_TAG;
 public class BookCursorAdapter extends CursorAdapter {
 
     private OnQuantityChangeListener listener;
+    private Toast toast;
 
     public BookCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
@@ -70,13 +71,16 @@ public class BookCursorAdapter extends CursorAdapter {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(LOG_TAG, "Sell Button has been clicked");
                 if (listener != null) {
                     if (quantity[0] > 0) {
                         quantity[0]--;
                         listener.updateQuantity(rowId, quantity[0]);
                     } else {
-                        Toast.makeText(context, "No more books to sell", Toast.LENGTH_SHORT).show();
+                        if (toast != null) {
+                            toast.cancel();
+                        }
+                        toast = Toast.makeText(context, "No more books to sell", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 }
             }

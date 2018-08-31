@@ -136,7 +136,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_margin="8dp"
-                    android:background="@drawable/button_shape"
+                    android:background="@drawable/quantity_button_shape"
                     android:contentDescription="@string/no_desc_available"
                     app:srcCompat="@drawable/ic_add" />
 
@@ -167,7 +167,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_margin="8dp"
-                    android:background="@drawable/button_shape"
+                    android:background="@drawable/quantity_button_shape"
                     android:contentDescription="@string/no_desc_available"
                     app:srcCompat="@drawable/ic_remove" />
 
