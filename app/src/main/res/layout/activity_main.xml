@@ -17,6 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="16dp"
+        android:drawableTop="@drawable/empty_state"
+        android:textAppearance="?android:textAppearanceMedium"
         android:text="@string/empty_string"
         android:textAlignment="center" />
 

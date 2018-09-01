@@ -20,7 +20,7 @@
     <string name="select_a_new_image">Tap to select a new image</string>
     <string name="unknown_author">Unknown</string>
     <string name="isbn_not_available">Not Available</string>
-    <string name="empty_string">No data yet. Start adding some books!</string>
+    <string name="empty_string"><b>Uh oh! Nothing here, but me.</b>\nStart by adding some books!</string>
     <string name="contact_supplier">Order</string>
     <string name="email_at">Email at %s</string>
     <string name="call_at">Call at %s</string>
