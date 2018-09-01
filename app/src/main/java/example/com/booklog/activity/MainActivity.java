@@ -1,5 +1,6 @@
 package example.com.booklog.activity;
 
+import android.app.ActivityOptions;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -7,12 +8,14 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -66,9 +69,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                ImageView imageView = view.findViewById(R.id.image);
+                ActivityOptions options = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, imageView, imageView.getTransitionName());
+                }
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.setData(ContentUris.withAppendedId(CONTENT_URI, id));
-                startActivity(intent);
+                startActivity(intent, options.toBundle());
             }
         });
 

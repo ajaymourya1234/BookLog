@@ -50,8 +50,11 @@ public class BookCursorAdapter extends CursorAdapter {
         TextView priceTextView = view.findViewById(R.id.price);
         TextView quantityTextView = view.findViewById(R.id.quantity);
         ImageView imageView = view.findViewById(R.id.image);
-        Button saleButton = view.findViewById(R.id.saleButton);
+        final Button saleButton = view.findViewById(R.id.saleButton);
         Button contactButton = view.findViewById(R.id.contact);
+
+        saleButton.setEnabled(true);
+        saleButton.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
         int rowIndex = cursor.getColumnIndex(_ID);
         int nameColumnIndex = cursor.getColumnIndex(COLUMN_NAME);
@@ -90,8 +93,10 @@ public class BookCursorAdapter extends CursorAdapter {
                         if (toast != null) {
                             toast.cancel();
                         }
-                        toast = Toast.makeText(context, "No more books to sell", Toast.LENGTH_SHORT);
+                        toast = Toast.makeText(context, "Books sold out", Toast.LENGTH_SHORT);
                         toast.show();
+                        saleButton.setEnabled(false);
+                        saleButton.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
                     }
                 }
             }
@@ -104,47 +109,6 @@ public class BookCursorAdapter extends CursorAdapter {
                 dialog.show();
             }
         });
-
-        /*contactButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                View customView = LayoutInflater.from(context).inflate(R.layout.layout_custom_dialog, null, false);
-                TextView name = customView.findViewById(R.id.supplierName);
-                TextView email = customView.findViewById(R.id.email);
-                TextView phone = customView.findViewById(R.id.phone);
-
-                name.setText(supplierName);
-                if (supplierEmail.length() > 0 ) {
-                    email.setVisibility(View.VISIBLE);
-                    email.setText(supplierEmail);
-                    email.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(Intent.ACTION_SENDTO);
-                            intent.setData(Uri.parse("mailto:" + supplierEmail));
-                        }
-                    });
-                } else {
-                    email.setVisibility(View.GONE);
-                }
-
-                if (supplierPhone.length() > 0 ) {
-                    phone.setVisibility(View.VISIBLE);
-                    phone.setText(supplierPhone);
-                    phone.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + supplierPhone));
-                        }
-                    });
-                } else {
-                    phone.setVisibility(View.GONE);
-                }
-                builder.setView(view).show();
-            }
-        });*/
 
     }
 
