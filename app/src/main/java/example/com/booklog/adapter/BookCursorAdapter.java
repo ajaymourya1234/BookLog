@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import example.com.booklog.R;
-import example.com.booklog.listner.OnQuantityChangeListener;
+import example.com.booklog.listener.OnQuantityChangeListener;
 
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
@@ -22,7 +21,6 @@ import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
 import static example.com.booklog.data.BookContract.BookEntry._ID;
-import static example.com.booklog.data.BookContract.LOG_TAG;
 
 public class BookCursorAdapter extends CursorAdapter {
 

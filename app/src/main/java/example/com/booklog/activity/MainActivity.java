@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import example.com.booklog.R;
 import example.com.booklog.adapter.BookCursorAdapter;
-import example.com.booklog.listner.OnQuantityChangeListener;
+import example.com.booklog.listener.OnQuantityChangeListener;
 
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
