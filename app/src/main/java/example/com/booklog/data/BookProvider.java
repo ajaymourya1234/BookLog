@@ -26,11 +26,14 @@ import static example.com.booklog.data.BookContract.PATH_BOOKS;
 
 public class BookProvider extends ContentProvider {
 
+    //integer code to identify URIs
     public static final int CODE_BOOK = 100;
     public static final int CODE_BOOK_WITH_ID = 101;
 
+    //UriMatcher reference to match a given uri request
     private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
+    //set up the URIs to be matched with when a database request arises
     static {
         uriMatcher.addURI(CONTENT_AUTHORITY, PATH_BOOKS, CODE_BOOK);
         uriMatcher.addURI(CONTENT_AUTHORITY, PATH_BOOKS + "/#", CODE_BOOK_WITH_ID);
@@ -40,16 +43,28 @@ public class BookProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        //initialize database helper instance
         helper = new BookDbHelper(getContext());
         return true;
     }
 
+    /**
+     * query call to fetch data from the database in the form of a cursor
+     *
+     * @param uri           reference to uri specifying the data to be fetched
+     * @param projection    list of columns to be fetched
+     * @param selection     where clause
+     * @param selectionArgs where clause arguments
+     * @param sortOrder     sort order for the cursor results
+     * @return cursor with the queried data results
+     */
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase database = helper.getReadableDatabase();
         Cursor cursor;
 
+        //verify if the query is for all records or for a single record based on the URI
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
                 cursor = database.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
@@ -65,16 +80,25 @@ public class BookProvider extends ContentProvider {
                 throw new IllegalArgumentException("Cannot query unknown URI : " + uri);
         }
         if (getContext() != null) {
+            //set up notifications to the uri to enable update sync
+            // whenever a change occurs with the uri or it's descendants
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
         }
 
         return cursor;
     }
 
+    /**
+     * gets the MIME type for the data based on the URI
+     *
+     * @param uri reference to the content uri
+     * @return MIME type in the format of a string
+     */
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
 
+        //define the MIME type based on the uri
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
                 return CONTENT_LIST_TYPE;
@@ -85,6 +109,13 @@ public class BookProvider extends ContentProvider {
         }
     }
 
+    /**
+     * insert data into the table
+     *
+     * @param uri           content uri reference to indicate inserting rows to a database
+     * @param contentValues data set for a particular row
+     * @return uri with the newly added row ID
+     */
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
@@ -93,11 +124,15 @@ public class BookProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
                 if (contentValues != null) {
+                    //validate the data to be inserted
                     validateInsertData(contentValues);
+                    //get the row id after insert
                     long id = database.insert(TABLE_NAME, null, contentValues);
                     if (id != -1 && getContext() != null) {
+                        //notify change in uri
                         getContext().getContentResolver().notifyChange(uri, null);
                     }
+                    //return uri with the newly added row ID
                     return ContentUris.withAppendedId(uri, id);
                 }
 
@@ -106,6 +141,12 @@ public class BookProvider extends ContentProvider {
         }
     }
 
+    /**
+     * validate the data to be inserted to the database - verify if the fields are null or empty
+     * throw IllegalArgumentException in case of invalid data
+     *
+     * @param contentValues data set for a particular row
+     */
     private void validateInsertData(ContentValues contentValues) {
         String name = contentValues.getAsString(COLUMN_NAME);
         if (name == null || TextUtils.isEmpty(name)) {
@@ -140,12 +181,21 @@ public class BookProvider extends ContentProvider {
 
     }
 
+    /**
+     * delete a particular row from the database
+     *
+     * @param uri           uri specifying the row to be deleted
+     * @param selection     where clause
+     * @param selectionArgs where clause arguments
+     * @return number of rows deleted
+     */
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase database = helper.getWritableDatabase();
 
         int rowsDeleted;
 
+        //identify whether uri indicates deleting all rows or a specific row
         switch (uriMatcher.match(uri)) {
 
             case CODE_BOOK:
@@ -163,47 +213,60 @@ public class BookProvider extends ContentProvider {
         }
 
         if (rowsDeleted != 0 && getContext() != null) {
+            //notify change in uri
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
     }
 
+    /**
+     * @param uri           uri specifying the row to be updated
+     * @param contentValues data set for a particular row
+     * @param selection     where clause
+     * @param selectionArgs where clause arguments
+     * @return number of rows updated
+     */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase database = helper.getWritableDatabase();
         int rowsUpdated;
 
+        if (contentValues == null || contentValues.size() == 0) {
+            return 0;
+        }
+
+        //validate the data to be updated
+        validateUpdateData(contentValues);
+
+        //identify whether uri indicates deleting all rows or a specific row
         switch (uriMatcher.match(uri)) {
             case CODE_BOOK:
-                if (contentValues == null || contentValues.size() == 0) {
-                    return 0;
-                }
-                validateUpdateData(contentValues);
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
-                if (rowsUpdated != 0 && getContext() != null) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-                return rowsUpdated;
+                break;
 
             case CODE_BOOK_WITH_ID:
-                if (contentValues == null || contentValues.size() == 0) {
-                    return 0;
-                }
-                validateUpdateData(contentValues);
                 selection = _ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsUpdated = database.update(TABLE_NAME, contentValues, selection, selectionArgs);
-                if (rowsUpdated != 0 && getContext() != null) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-                return rowsUpdated;
+                break;
 
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
+        if (rowsUpdated != 0 && getContext() != null) {
+            //notify change in uri
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
 
     }
 
+    /**
+     * validate the data to be inserted to the database - verify if the fields are null or empty
+     * throw IllegalArgumentException in case of invalid data
+     *
+     * @param contentValues data set for a particular row
+     */
     private void validateUpdateData(ContentValues contentValues) {
 
         if (contentValues.containsKey(COLUMN_QUANTITY) && contentValues.getAsString(COLUMN_QUANTITY).length() > 0) {

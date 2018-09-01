@@ -1,11 +1,9 @@
 package example.com.booklog.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,23 +26,45 @@ import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NA
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.data.BookContract.BookEntry._ID;
 
+//custom cursor adapter
 public class BookCursorAdapter extends CursorAdapter {
 
+    private Context context;
+    //listener for sale button
     private OnQuantityChangeListener listener;
     private Toast toast;
 
     public BookCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
+        this.context = context;
+        //initialize the listener
         listener = (OnQuantityChangeListener) context;
     }
 
+    /**
+     * inflates the list item layout
+     *
+     * @param context reference to activity context that provides access to application resources
+     * @param cursor  reference to the cursor holding the data for the individual list item
+     * @param parent  viewgroup to which the individual list item view has to be attached
+     * @return newly inflated list view item
+     */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.layout_list_item, parent, false);
     }
 
+    /**
+     * binds the individual views of the list item
+     *
+     * @param view    reference to individual list item view
+     * @param context reference to activity context that provides access to application resources
+     * @param cursor  reference to the cursor holding the data for the individual list item
+     */
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
+
+        //obtain references to the views
         TextView nameTextView = view.findViewById(R.id.name);
         TextView authorTextView = view.findViewById(R.id.author);
         TextView priceTextView = view.findViewById(R.id.price);
@@ -53,9 +73,12 @@ public class BookCursorAdapter extends CursorAdapter {
         final Button saleButton = view.findViewById(R.id.saleButton);
         Button contactButton = view.findViewById(R.id.contact);
 
-        saleButton.setEnabled(true);
-        saleButton.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        //set the title TextView to not extend to more than 1 line
+        nameTextView.setSingleLine();
 
+        enableButton(saleButton);
+
+        //get the column indices for the required fields
         int rowIndex = cursor.getColumnIndex(_ID);
         int nameColumnIndex = cursor.getColumnIndex(COLUMN_NAME);
         int authorColumnIndex = cursor.getColumnIndex(COLUMN_AUTHOR);
@@ -66,6 +89,7 @@ public class BookCursorAdapter extends CursorAdapter {
         int supplierPhoneIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_PHONE);
         int supplierEmailIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_EMAIL);
 
+        //fetch the values for each field
         final long rowId = cursor.getLong(rowIndex);
         String name = cursor.getString(nameColumnIndex);
         String author = cursor.getString(authorColumnIndex);
@@ -76,32 +100,43 @@ public class BookCursorAdapter extends CursorAdapter {
         final String supplierPhone = cursor.getString(supplierPhoneIndex);
         final String supplierEmail = cursor.getString(supplierEmailIndex);
 
+        //display the book details and image
         nameTextView.setText(name);
         authorTextView.setText(author);
         priceTextView.setText(String.valueOf(price));
         quantityTextView.setText(String.valueOf(quantity[0]));
         imageView.setImageURI(Uri.parse(imageUri));
 
+        if (quantity[0] == 0) {
+            disableSaleButton(saleButton);
+        }
+
+        //set on click listener for the sale button
         saleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
+                    //decrease the product quantity, ensuring it doesn't go below 0
                     if (quantity[0] > 0) {
                         quantity[0]--;
+                        //call update quantity to update the value in the database
                         listener.updateQuantity(rowId, quantity[0]);
                     } else {
                         if (toast != null) {
+                            //cancel any outstanding toasts
                             toast.cancel();
                         }
-                        toast = Toast.makeText(context, "Books sold out", Toast.LENGTH_SHORT);
+                        //
+                        //display out of stock error when the quantity reduces to 0
+                        toast = Toast.makeText(context, R.string.product_out_of_stock, Toast.LENGTH_SHORT);
                         toast.show();
-                        saleButton.setEnabled(false);
-                        saleButton.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                        disableSaleButton(saleButton);
                     }
                 }
             }
         });
 
+        //set listener on "Contact Supplier" button to display dialog showing email/phone
         contactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,6 +145,20 @@ public class BookCursorAdapter extends CursorAdapter {
             }
         });
 
+    }
+
+    private void enableButton(Button button) {
+        //enable sale button in case it was previously disabled
+        button.setEnabled(true);
+        //update the button text color for enabled state
+        button.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+    }
+
+    private void disableSaleButton(Button button) {
+        //disable the sale button
+        button.setEnabled(false);
+        //restore the button text color to normal
+        button.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
     }
 
 }

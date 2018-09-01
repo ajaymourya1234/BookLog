@@ -14,6 +14,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        //add a 1s delay for the splash screen
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

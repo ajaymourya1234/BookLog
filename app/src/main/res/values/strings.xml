@@ -25,4 +25,25 @@
     <string name="email_at">Email at %s</string>
     <string name="call_at">Call at %s</string>
     <string name="contact">Contact \ </string>
+    <string name="splash_screen_text">Just a moment.. We\'re getting your books!</string>
+    <string name="add_book">Add a new book</string>
+    <string name="edit_book">Edit book</string>
+    <string name="discard_changes">Discard changes?</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="delete_confirm">Delete this book?</string>
+    <string name="delete">Delete</string>
+    <string name="negative_quantity_error">Quantity cannot be less than 0</string>
+    <string name="title_empty_error">Title cannot be empty</string>
+    <string name="price_invalid_error">Valid price required</string>
+    <string name="quantity_missing_error">Quantity required</string>
+    <string name="supplier_name_error">Supplier name is required</string>
+    <string name="supplier_details_missing_error">Either one of supplier\'s phone or email is required</string>
+    <string name="error_save_book">Error saving book</string>
+    <string name="success_save_book">Book saved</string>
+    <string name="error_update_book">Error updating book</string>
+    <string name="success_update_book">Book updated</string>
+    <string name="error_delete_book">Error deleting book</string>
+    <string name="success_delete_book">Book deleted</string>
+    <string name="product_out_of_stock">No more stock</string>
 </resources>

@@ -18,9 +18,12 @@ import static example.com.booklog.data.BookContract.BookEntry._ID;
 
 public class BookDbHelper extends SQLiteOpenHelper {
 
+    //define constants for db name and version
+    //version will be changed anytime the db schema changes (upgrade is required)
     private static final String DB_NAME = "books.db";
     private static final int DB_VERSION = 5;
 
+    //define create table query
     private static final String CREATE_ENTRIES = "CREATE TABLE " +
             TABLE_NAME + " (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -35,17 +38,30 @@ public class BookDbHelper extends SQLiteOpenHelper {
             COLUMN_IMAGE + " TEXT NOT NULL" +
             ")";
 
+    //define drop table query
     private static final String DROP_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     BookDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    /**
+     * creates the table based on the create query
+     *
+     * @param sqLiteDatabase the database in which the table is created
+     */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_ENTRIES);
     }
 
+    /**
+     * called whenever the table needs to be upgraded (ex: schema update)
+     *
+     * @param sqLiteDatabase database associated with the table
+     * @param i              old version of the database
+     * @param i1             new version of the database
+     */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(DROP_ENTRIES);
