@@ -96,10 +96,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                "://" + getResources().getResourcePackageName(R.drawable.no_img_available) +
+                '/' + getResources().getResourceTypeName(R.drawable.no_img_available) +
+                '/' + getResources().getResourceEntryName(R.drawable.no_img_available));
+
         Intent intent = getIntent();
         if (intent.getData() == null) {
             setTitle("Add a new book");
             invalidateOptionsMenu();
+            image.setImageURI(imageUri);
         } else {
             uri = intent.getData();
             setTitle("Edit book");
@@ -185,12 +191,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         String supplierPhone = supplierPhoneEditText.getText().toString().trim();
         String supplierEmail = supplierEmailEditText.getText().toString().trim();
 
-        if (imageUri == null || TextUtils.isEmpty(imageUri.toString())) {
-            imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
-                    "://" + getResources().getResourcePackageName(R.drawable.no_img_available) +
-                    '/' + getResources().getResourceTypeName(R.drawable.no_img_available) +
-                    '/' + getResources().getResourceEntryName(R.drawable.no_img_available));
-        }
 
         if (uri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(author) && TextUtils.isEmpty(isbn) &&
                 TextUtils.isEmpty(price) && TextUtils.isEmpty(quantity) && TextUtils.isEmpty(supplierName) &&

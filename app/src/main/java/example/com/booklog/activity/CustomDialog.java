@@ -39,7 +39,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 
         ButterKnife.bind(this);
 
-        name.setText(supplierName);
+        name.append(supplierName);
         if (supplierEmail.length() > 0) {
             email.setVisibility(View.VISIBLE);
             email.setText(String.format(context.getString(R.string.email_at), supplierEmail));

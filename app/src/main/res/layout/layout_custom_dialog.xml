@@ -14,8 +14,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:textColor="@color/colorAccent"
-        android:textAppearance="?android:textAppearanceLarge"
-        tools:text="Arrow Books" />
+        android:textAppearance="?android:textAppearanceMedium"
+        android:text="@string/contact" />
 
         <TextView
             android:id="@+id/email"
