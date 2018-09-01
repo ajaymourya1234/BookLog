@@ -23,8 +23,6 @@
             android:exported="true" />
 
         <activity android:name=".activity.DetailActivity" />
-        <activity android:name=".activity.DetailsActivity"
-            android:label="Details"/>
     </application>
 
 </manifest>
