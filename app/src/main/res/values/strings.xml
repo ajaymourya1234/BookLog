@@ -22,4 +22,7 @@
     <string name="isbn_not_available">Not Available</string>
     <string name="empty_string">No data yet. Start adding some books!</string>
     <string name="items_count">%s items left in stock</string>
+    <string name="contact_supplier">Contact Supplier</string>
+    <string name="email_at">Email @ <u>%s</u></string>
+    <string name="call_at">Call @ <u>%s</u></string>
 </resources>

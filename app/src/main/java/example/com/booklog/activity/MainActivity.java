@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import example.com.booklog.R;
 import example.com.booklog.adapter.BookCursorAdapter;
+import example.com.booklog.listener.OnDialogButtonClick;
 import example.com.booklog.listener.OnQuantityChangeListener;
 
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
@@ -27,10 +28,13 @@ import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
+import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.data.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.data.BookContract.BookEntry._ID;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, OnQuantityChangeListener {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, OnQuantityChangeListener, OnDialogButtonClick {
 
     @BindView(R.id.listView)
     ListView listView;
@@ -79,7 +83,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 COLUMN_AUTHOR,
                 COLUMN_PRICE,
                 COLUMN_QUANTITY,
-                COLUMN_IMAGE
+                COLUMN_IMAGE,
+                COLUMN_SUPPLIER_NAME,
+                COLUMN_SUPPLIER_EMAIL,
+                COLUMN_SUPPLIER_PHONE
         };
         return new CursorLoader(this, CONTENT_URI, projection, null, null, null);
     }
@@ -100,5 +107,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentValues.put(COLUMN_QUANTITY, newQuantity);
         Uri updateUri = ContentUris.withAppendedId(CONTENT_URI, rowId);
         getContentResolver().update(updateUri, contentValues, null, null);
+    }
+
+    @Override
+    public void onChooseEmail(String email) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + email));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onChoosePhone(String phone) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phone));
+        startActivity(intent);
     }
 }
