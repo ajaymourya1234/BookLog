@@ -9,15 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +39,6 @@ import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NA
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.data.BookContract.BookEntry.CONTENT_URI;
 import static example.com.booklog.data.BookContract.BookEntry._ID;
-import static example.com.booklog.data.BookContract.LOG_TAG;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, TextWatcher {
 
@@ -112,6 +104,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             invalidateOptionsMenu();
             //set default image
             image.setImageURI(imageUri);
+
+            //register text changed listeners for all edit texts to track any changes made so that
+            //the user can be alerted when there are any unsaved changes on exiting the activity
+            registerTextChangedListeners();
         } else {
             //fetch the specific uri from the intent
             uri = intent.getData();
@@ -254,6 +250,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             nameEditText.setError(getString(R.string.title_empty_error));
             //indicate save wasn't successful
             saveSuccess = false;
+            //hide soft keyboard to indicate to the user that field validation has failed
+            Utils.hideSoftKeyboard(this);
             return;
         } else {
             //update save success flag if validation succeeds
@@ -276,6 +274,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             priceEditText.setError(getString(R.string.price_invalid_error));
             //indicate save wasn't successful
             saveSuccess = false;
+            //hide soft keyboard to indicate to the user that field validation has failed
+            Utils.hideSoftKeyboard(this);
             return;
         } else {
             //update save success flag if validation succeeds
@@ -287,6 +287,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             quantityEditText.setError(getString(R.string.quantity_missing_error));
             //indicate save wasn't successful
             saveSuccess = false;
+            //hide soft keyboard to indicate to the user that field validation has failed
+            Utils.hideSoftKeyboard(this);
             return;
         } else {
             //update save success flag if validation succeeds
@@ -298,6 +300,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             supplierNameEditText.setError(getString(R.string.supplier_name_error));
             //indicate save wasn't successful
             saveSuccess = false;
+            //hide soft keyboard to indicate to the user that field validation has failed
+            Utils.hideSoftKeyboard(this);
             return;
         } else {
             //update save success flag if validation succeeds
@@ -571,19 +575,13 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             //handle incrementing the quantity
             case R.id.increaseQuantity:
                 quantity++;
-                //update the edit text with the new value, clear error alert if any
-                quantityEditText.setText(String.valueOf(quantity));
-                quantityEditText.setSelection(quantityEditText.getText().length());
-                quantityEditText.setError(null);
+                updateQuantity(quantity);
                 break;
             //handle decrementing the quantity
             case R.id.decreaseQuantity:
                 if (quantity > 0) {
                     quantity--;
-                    //update the edit text with the new value, clear error alert if any
-                    quantityEditText.setText(String.valueOf(quantity));
-                    quantityEditText.setSelection(quantityEditText.getText().length());
-                    quantityEditText.setError(null);
+                    updateQuantity(quantity);
                 } else {
                     //ensure that the quantity doesn't go negative
                     displayToastAlert(getString(R.string.negative_quantity_error));
@@ -610,6 +608,18 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     /**
+     * displays the updated quantity value in the edit text field
+     *
+     * @param quantity new quantity value
+     */
+    private void updateQuantity(int quantity) {
+        //update the edit text with the new value, clear error alert if any
+        quantityEditText.setText(String.valueOf(quantity));
+        quantityEditText.setSelection(quantityEditText.getText().length());
+        quantityEditText.setError(null);
+    }
+
+    /**
      * called once startActivityForResult returns
      *
      * @param requestCode integer code to identify the type of intent request completed
@@ -630,70 +640,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     unsavedChanges = true;
                 }
                 //update the image view with the newly chosen image after scaling the image size
-                image.setImageBitmap(getBitmapFromUri(imageUri));
+                image.setImageBitmap(Utils.getBitmapFromUri(this, image, imageUri));
             }
 
         }
 
-    }
-
-    /**
-     * scales the newly picked image to match the destination view size to handle memory resources efficiently
-     *
-     * @param uri uri of the newly picked image
-     * @return Bitmap object of the newly scaled image
-     */
-    private Bitmap getBitmapFromUri(Uri uri) {
-
-        //get the dimensions of the view
-        int imageWidth = image.getWidth();
-        int imageHeight = image.getHeight();
-
-        InputStream inputStream = null;
-
-        try {
-            inputStream = getContentResolver().openInputStream(uri);
-
-            //get the dimensions of the bitmap
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(inputStream, null, options);
-            if (inputStream != null) {
-                inputStream.close();
-            }
-
-            int targetWidth = options.outWidth;
-            int targetHeight = options.outHeight;
-
-            //determine the scale factor for the image
-            int scaleFactor = Math.min(imageWidth / targetWidth, imageHeight / targetHeight);
-
-            //decode the image file into a Bitmap that is sized to fill the view
-            options.inJustDecodeBounds = false;
-            options.inSampleSize = scaleFactor;
-
-            inputStream = getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            if (inputStream != null) {
-                inputStream.close();
-            }
-
-            return bitmap;
-        } catch (FileNotFoundException e) {
-            Log.e(LOG_TAG, "Failed to load the image", e);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "I/O error when trying to load the image", e);
-        } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return null;
     }
 
     /**

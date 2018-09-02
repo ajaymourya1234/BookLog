@@ -76,7 +76,7 @@ public class BookCursorAdapter extends CursorAdapter {
         //set the title TextView to not extend to more than 1 line
         nameTextView.setSingleLine();
 
-        enableButton(saleButton);
+//        enableButton(saleButton);
 
         //get the column indices for the required fields
         int rowIndex = cursor.getColumnIndex(_ID);
@@ -91,7 +91,7 @@ public class BookCursorAdapter extends CursorAdapter {
 
         //fetch the values for each field
         final long rowId = cursor.getLong(rowIndex);
-        String name = cursor.getString(nameColumnIndex);
+        final String name = cursor.getString(nameColumnIndex);
         String author = cursor.getString(authorColumnIndex);
         double price = cursor.getDouble(priceColumnIndex);
         final int[] quantity = {cursor.getInt(quantityColumnIndex)};
@@ -107,8 +107,11 @@ public class BookCursorAdapter extends CursorAdapter {
         quantityTextView.setText(String.valueOf(quantity[0]));
         imageView.setImageURI(Uri.parse(imageUri));
 
+        //enable/disable sale button depending on stock availability
         if (quantity[0] == 0) {
             disableSaleButton(saleButton);
+        } else {
+            enableButton(saleButton);
         }
 
         //set on click listener for the sale button
@@ -121,7 +124,8 @@ public class BookCursorAdapter extends CursorAdapter {
                         quantity[0]--;
                         //call update quantity to update the value in the database
                         listener.updateQuantity(rowId, quantity[0]);
-                    } else {
+                    }
+                    if (quantity[0] == 0) {
                         if (toast != null) {
                             //cancel any outstanding toasts
                             toast.cancel();
@@ -130,7 +134,11 @@ public class BookCursorAdapter extends CursorAdapter {
                         //display out of stock error when the quantity reduces to 0
                         toast = Toast.makeText(context, R.string.product_out_of_stock, Toast.LENGTH_SHORT);
                         toast.show();
+                        //disable sale button
                         disableSaleButton(saleButton);
+                    } else {
+                        //if product is available in stock, enable sale button
+                        enableButton(saleButton);
                     }
                 }
             }
@@ -140,7 +148,7 @@ public class BookCursorAdapter extends CursorAdapter {
         contactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CustomDialog dialog = new CustomDialog(context, supplierName, supplierEmail, supplierPhone);
+                CustomDialog dialog = new CustomDialog(context, name,supplierName, supplierEmail, supplierPhone);
                 dialog.show();
             }
         });
@@ -148,17 +156,23 @@ public class BookCursorAdapter extends CursorAdapter {
     }
 
     private void enableButton(Button button) {
-        //enable sale button in case it was previously disabled
-        button.setEnabled(true);
-        //update the button text color for enabled state
-        button.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        if (!button.isEnabled()) {
+            //enable sale button in case it was previously disabled
+            button.setEnabled(true);
+            //update the button text color for enabled state
+            button.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        }
+
     }
 
     private void disableSaleButton(Button button) {
-        //disable the sale button
-        button.setEnabled(false);
-        //restore the button text color to normal
-        button.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+        if (button.isEnabled()) {
+            //disable the sale button
+            button.setEnabled(false);
+            //restore the button text color to normal
+            button.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+        }
+
     }
 
 }

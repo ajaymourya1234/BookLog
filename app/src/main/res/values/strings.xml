@@ -45,5 +45,7 @@
     <string name="success_update_book">Book updated</string>
     <string name="error_delete_book">Error deleting book</string>
     <string name="success_delete_book">Book deleted</string>
-    <string name="product_out_of_stock">No more stock</string>
+    <string name="product_out_of_stock">Product out of stock. Order from supplier.</string>
+    <string name="email_subject">Order for book : %s</string>
+    <string name="email_body">Hello!\n\n\tWe\'d like to order a set of %1d copies of the book titled: %2s. Kindly process the request as soon as possible.\n\nRegards,\nAmelia\nDirector\nBook Log Ltd.</string>
 </resources>

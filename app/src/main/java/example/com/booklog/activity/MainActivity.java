@@ -16,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Random;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import example.com.booklog.R;
@@ -151,18 +153,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /**
      * called when the user chooses a contact - email or phone to contact a supplier
-     *
-     * @param contactDetails - email address or phone number of the given supplier
+     *  @param contactDetails - email address or phone number of the given supplier
      * @param type           - defines the contact type - email or phone to decide the intent type
+     * @param bookName
      */
     @Override
-    public void onChooseContactType(String contactDetails, String type) {
+    public void onChooseContactType(String contactDetails, String type, String bookName) {
         Intent intent = new Intent();
         switch (type) {
             case EMAIL:
                 //set email intent
                 intent.setAction(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:" + contactDetails));
+                intent.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.email_subject), bookName));
+                intent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.email_body), new Random().nextInt(100), bookName));
                 break;
             case PHONE:
                 //set phone dial intent

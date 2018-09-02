@@ -28,10 +28,11 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 
     //listener reference to handle intents for supplier email and/or phone
     private OnDialogButtonClick listener;
+    private String bookName;
     private String supplierEmail;
     private String supplierPhone;
 
-    public CustomDialog(@NonNull Context context, String supplierName, String supplierEmail, String supplierPhone) {
+    public CustomDialog(@NonNull Context context, String bookName, String supplierName, String supplierEmail, String supplierPhone) {
         super(context);
         this.requestWindowFeature(FEATURE_NO_TITLE);
         //set custom dialog layout
@@ -39,13 +40,14 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 
         //initialize listener and supplier contact details
         this.listener = (OnDialogButtonClick) context;
+        this.bookName = bookName;
         this.supplierEmail = supplierEmail;
         this.supplierPhone = supplierPhone;
 
         ButterKnife.bind(this);
 
         //display supplier name
-        name.append(supplierName);
+        this.name.append(supplierName);
 
         //verify if supplier email is available and display/hide corresponding TextView accordingly
         if (supplierEmail.length() > 0) {
@@ -77,10 +79,10 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.email:
-                listener.onChooseContactType(supplierEmail, EMAIL);
+                listener.onChooseContactType(supplierEmail, EMAIL, bookName);
                 break;
             case R.id.phone:
-                listener.onChooseContactType(supplierPhone, PHONE);
+                listener.onChooseContactType(supplierPhone, PHONE, bookName);
                 break;
         }
     }
