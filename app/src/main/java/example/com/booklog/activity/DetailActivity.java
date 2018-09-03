@@ -247,7 +247,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         //validate that the book title isn't an empty string
         if (TextUtils.isEmpty(name)) {
             //set error accordingly
-            nameEditText.setError(getString(R.string.title_empty_error));
+            nameEditText.setError("");
+            displayToastAlert(getString(R.string.title_empty_error));
             //indicate save wasn't successful
             saveSuccess = false;
             //hide soft keyboard to indicate to the user that field validation has failed
@@ -271,7 +272,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         //validate price field isn't empty
         if (TextUtils.isEmpty(price)) {
             //set error accordingly
-            priceEditText.setError(getString(R.string.price_invalid_error));
+            priceEditText.setError("");
+            displayToastAlert(getString(R.string.price_invalid_error));
             //indicate save wasn't successful
             saveSuccess = false;
             //hide soft keyboard to indicate to the user that field validation has failed
@@ -284,7 +286,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         if (TextUtils.isEmpty(quantity)) {
             //set error accordingly
-            quantityEditText.setError(getString(R.string.quantity_missing_error));
+            quantityEditText.setError("");
+            displayToastAlert(getString(R.string.quantity_missing_error));
             //indicate save wasn't successful
             saveSuccess = false;
             //hide soft keyboard to indicate to the user that field validation has failed
@@ -297,7 +300,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         if (TextUtils.isEmpty(supplierName)) {
             //set error accordingly
-            supplierNameEditText.setError(getString(R.string.supplier_name_error));
+            supplierNameEditText.setError("");
+            displayToastAlert(getString(R.string.supplier_name_error));
             //indicate save wasn't successful
             saveSuccess = false;
             //hide soft keyboard to indicate to the user that field validation has failed

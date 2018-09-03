@@ -76,8 +76,6 @@ public class BookCursorAdapter extends CursorAdapter {
         //set the title TextView to not extend to more than 1 line
         nameTextView.setSingleLine();
 
-//        enableButton(saleButton);
-
         //get the column indices for the required fields
         int rowIndex = cursor.getColumnIndex(_ID);
         int nameColumnIndex = cursor.getColumnIndex(COLUMN_NAME);
