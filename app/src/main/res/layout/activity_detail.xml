@@ -245,6 +245,20 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <Button
+            android:id="@+id/order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/order_button_shape"
+            android:foreground="?selectableItemBackground"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:layout_gravity="center"
+            android:text="@string/contact_supplier"
+            android:textColor="@android:color/white" />
+
+
     </LinearLayout>
 
 

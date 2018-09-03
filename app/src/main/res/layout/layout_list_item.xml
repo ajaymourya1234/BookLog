@@ -115,7 +115,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:background="@drawable/sale_button_shape"
         android:foreground="?selectableItemBackground"
@@ -124,6 +126,8 @@
         android:text="@string/sell"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/image" />
 
     <TextView
@@ -138,27 +142,5 @@
         app:layout_constraintBottom_toTopOf="@+id/saleButton"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/author" />
-
-    <Button
-        android:id="@+id/contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:foreground="?selectableItemBackground"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
-        android:text="@string/contact_supplier"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/saleButton"
-        app:layout_constraintTop_toBottomOf="@+id/pieces" />
 
 </android.support.constraint.ConstraintLayout>

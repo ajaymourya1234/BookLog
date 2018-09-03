@@ -2,14 +2,18 @@ package example.com.booklog.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import example.com.booklog.R;
-import example.com.booklog.listener.OnDialogButtonClick;
 
 import static android.view.Window.FEATURE_NO_TITLE;
 
@@ -26,20 +30,18 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     @BindView(R.id.phone)
     TextView phone;
 
-    //listener reference to handle intents for supplier email and/or phone
-    private OnDialogButtonClick listener;
+    private Context context;
     private String bookName;
     private String supplierEmail;
     private String supplierPhone;
 
-    public CustomDialog(@NonNull Context context, String bookName, String supplierName, String supplierEmail, String supplierPhone) {
+    CustomDialog(@NonNull Context context, String bookName, String supplierName, String supplierEmail, String supplierPhone) {
         super(context);
         this.requestWindowFeature(FEATURE_NO_TITLE);
         //set custom dialog layout
         this.setContentView(R.layout.layout_custom_dialog);
 
-        //initialize listener and supplier contact details
-        this.listener = (OnDialogButtonClick) context;
+        this.context = context;
         this.bookName = bookName;
         this.supplierEmail = supplierEmail;
         this.supplierPhone = supplierPhone;
@@ -77,13 +79,28 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
      */
     @Override
     public void onClick(View view) {
+        Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.email:
-                listener.onChooseContactType(supplierEmail, EMAIL, bookName);
+                //set email intent
+                intent.setAction(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:" + supplierEmail));
+                intent.putExtra(Intent.EXTRA_SUBJECT, String.format(context.getString(R.string.email_subject), bookName));
+                intent.putExtra(Intent.EXTRA_TEXT, String.format(context.getString(R.string.email_body), new Random().nextInt(100), bookName));
                 break;
             case R.id.phone:
-                listener.onChooseContactType(supplierPhone, PHONE, bookName);
+                //set phone dial intent
+                intent.setAction(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + supplierPhone));
                 break;
+        }
+        //start intent
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+            //dismiss once the intent was successfully handled
+            dismiss();
+        } else {
+            Toast.makeText(context, "No suitable app to handle the current action", Toast.LENGTH_SHORT).show();
         }
     }
 }

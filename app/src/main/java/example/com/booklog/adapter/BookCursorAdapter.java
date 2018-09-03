@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import example.com.booklog.R;
-import example.com.booklog.activity.CustomDialog;
+import example.com.booklog.activity.Utils;
 import example.com.booklog.listener.OnQuantityChangeListener;
 
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
@@ -21,22 +21,17 @@ import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_NAME;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_PRICE;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_QUANTITY;
-import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_EMAIL;
-import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_NAME;
-import static example.com.booklog.data.BookContract.BookEntry.COLUMN_SUPPLIER_PHONE;
 import static example.com.booklog.data.BookContract.BookEntry._ID;
 
 //custom cursor adapter
 public class BookCursorAdapter extends CursorAdapter {
 
-    private Context context;
     //listener for sale button
     private OnQuantityChangeListener listener;
     private Toast toast;
 
     public BookCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
-        this.context = context;
         //initialize the listener
         listener = (OnQuantityChangeListener) context;
     }
@@ -71,7 +66,6 @@ public class BookCursorAdapter extends CursorAdapter {
         TextView quantityTextView = view.findViewById(R.id.quantity);
         ImageView imageView = view.findViewById(R.id.image);
         final Button saleButton = view.findViewById(R.id.saleButton);
-        Button contactButton = view.findViewById(R.id.contact);
 
         //set the title TextView to not extend to more than 1 line
         nameTextView.setSingleLine();
@@ -83,9 +77,6 @@ public class BookCursorAdapter extends CursorAdapter {
         int priceColumnIndex = cursor.getColumnIndex(COLUMN_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(COLUMN_QUANTITY);
         int imageColumnIndex = cursor.getColumnIndex(COLUMN_IMAGE);
-        int supplierNameIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_NAME);
-        int supplierPhoneIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_PHONE);
-        int supplierEmailIndex = cursor.getColumnIndex(COLUMN_SUPPLIER_EMAIL);
 
         //fetch the values for each field
         final long rowId = cursor.getLong(rowIndex);
@@ -94,9 +85,6 @@ public class BookCursorAdapter extends CursorAdapter {
         double price = cursor.getDouble(priceColumnIndex);
         final int[] quantity = {cursor.getInt(quantityColumnIndex)};
         String imageUri = cursor.getString(imageColumnIndex);
-        final String supplierName = cursor.getString(supplierNameIndex);
-        final String supplierPhone = cursor.getString(supplierPhoneIndex);
-        final String supplierEmail = cursor.getString(supplierEmailIndex);
 
         //display the book details and image
         nameTextView.setText(name);
@@ -107,9 +95,9 @@ public class BookCursorAdapter extends CursorAdapter {
 
         //enable/disable sale button depending on stock availability
         if (quantity[0] == 0) {
-            disableSaleButton(saleButton);
+            Utils.disableButton(context, saleButton);
         } else {
-            enableButton(saleButton);
+            Utils.enableButton(context, saleButton);
         }
 
         //set on click listener for the sale button
@@ -133,44 +121,14 @@ public class BookCursorAdapter extends CursorAdapter {
                         toast = Toast.makeText(context, R.string.product_out_of_stock, Toast.LENGTH_SHORT);
                         toast.show();
                         //disable sale button
-                        disableSaleButton(saleButton);
+                        Utils.disableButton(context, saleButton);
                     } else {
                         //if product is available in stock, enable sale button
-                        enableButton(saleButton);
+                        Utils.enableButton(context, saleButton);
                     }
                 }
             }
         });
-
-        //set listener on "Contact Supplier" button to display dialog showing email/phone
-        contactButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CustomDialog dialog = new CustomDialog(context, name,supplierName, supplierEmail, supplierPhone);
-                dialog.show();
-            }
-        });
-
-    }
-
-    private void enableButton(Button button) {
-        if (!button.isEnabled()) {
-            //enable sale button in case it was previously disabled
-            button.setEnabled(true);
-            //update the button text color for enabled state
-            button.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-        }
-
-    }
-
-    private void disableSaleButton(Button button) {
-        if (button.isEnabled()) {
-            //disable the sale button
-            button.setEnabled(false);
-            //restore the button text color to normal
-            button.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
-        }
-
     }
 
 }

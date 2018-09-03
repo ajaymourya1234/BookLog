@@ -18,6 +18,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -65,6 +66,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     ImageButton increaseQuantity;
     @BindView(R.id.decreaseQuantity)
     ImageButton decreaseQuantity;
+    @BindView(R.id.order)
+    Button orderButton;
 
     @BindView(R.id.image)
     ImageView image;
@@ -89,6 +92,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+        Utils.disableButton(this, orderButton);
 
         //define default image URI that would be displayed if no image is uploaded by the user
         imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
@@ -506,6 +511,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             //register text changed listeners for all edit texts to track any changes made so that
             //the user can be alerted when there are any unsaved changes on exiting the activity
             registerTextChangedListeners();
+
+            //enable order button to allow the user to contact the supplier
+            if (!TextUtils.isEmpty(supplierEmail) || !TextUtils.isEmpty(supplierPhone)) {
+                Utils.enableButton(this, orderButton);
+            }
+
+            //set click functionality for order button to contact supplier via phone/email intent
+            if (orderButton.isEnabled()) {
+                orderButton.setOnClickListener(this);
+            }
         }
 
     }
@@ -607,6 +622,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 intent.setType("image/*");
                 //start activity and get the resulting URI if a new image is selected
                 startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                break;
+
+            case R.id.order:
+                CustomDialog dialog = new CustomDialog(this, nameEditText.getText().toString().trim(),supplierNameEditText.getText().toString().trim(), supplierEmailEditText.getText().toString().trim(), supplierPhoneEditText.getText().toString().trim());
+                dialog.show();
                 break;
         }
     }
