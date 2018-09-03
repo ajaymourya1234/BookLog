@@ -325,6 +325,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             displayToastAlert(getString(R.string.supplier_details_missing_error));
             //indicate save wasn't successful
             saveSuccess = false;
+            //hide soft keyboard to indicate to the user that field validation has failed
+            Utils.hideSoftKeyboard(this);
+            supplierPhoneEditText.requestFocus();
             return;
         } else {
             //update save success flag if validation succeeds
