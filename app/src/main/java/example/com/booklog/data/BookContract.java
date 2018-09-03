@@ -7,7 +7,9 @@ import android.provider.BaseColumns;
 import example.com.booklog.BuildConfig;
 import example.com.booklog.activity.MainActivity;
 
-public class BookContract {
+
+//mark the class final as it will not be required to inherit this
+public final class BookContract {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 

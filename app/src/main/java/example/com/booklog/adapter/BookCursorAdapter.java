@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import example.com.booklog.R;
-import example.com.booklog.activity.Utils;
+import example.com.booklog.utils.Utils;
 import example.com.booklog.listener.OnQuantityChangeListener;
 
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;

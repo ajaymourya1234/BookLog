@@ -1,4 +1,4 @@
-package example.com.booklog.activity;
+package example.com.booklog.utils;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -35,7 +35,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     private String supplierEmail;
     private String supplierPhone;
 
-    CustomDialog(@NonNull Context context, String bookName, String supplierName, String supplierEmail, String supplierPhone) {
+    public CustomDialog(@NonNull Context context, String bookName, String supplierName, String supplierEmail, String supplierPhone) {
         super(context);
         this.requestWindowFeature(FEATURE_NO_TITLE);
         //set custom dialog layout

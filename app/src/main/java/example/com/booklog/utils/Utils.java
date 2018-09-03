@@ -1,4 +1,4 @@
-package example.com.booklog.activity;
+package example.com.booklog.utils;
 
 import android.app.Activity;
 import android.content.Context;

@@ -28,6 +28,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import example.com.booklog.R;
+import example.com.booklog.utils.CustomDialog;
+import example.com.booklog.utils.Utils;
 
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_AUTHOR;
 import static example.com.booklog.data.BookContract.BookEntry.COLUMN_IMAGE;
@@ -252,7 +254,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         //validate that the book title isn't an empty string
         if (TextUtils.isEmpty(name)) {
             //set error accordingly
-            nameEditText.setError("");
+            nameEditText.requestFocus();
+            nameEditText.setError(getString(R.string.title_empty_error));
             displayToastAlert(getString(R.string.title_empty_error));
             //indicate save wasn't successful
             saveSuccess = false;
